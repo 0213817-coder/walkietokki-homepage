@@ -1,0 +1,38 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Section from '../../components/Section.astro';
+---
+<BaseLayout lang="en" title="Download" description="Get WalkieTokki">
+  <Section>
+    <div class="max-w-2xl mx-auto text-center">
+      <h1 class="text-[32px] md:text-[40px] font-bold tracking-tighter mb-5 leading-tight">
+        See you soon
+      </h1>
+      <p class="text-text-secondary text-[16px] leading-body mb-10">
+        WalkieTokki is currently in beta.<br />
+        You can try it before launch by joining the beta program.
+      </p>
+
+      <div class="bg-bg-secondary border border-border rounded-card p-7 mb-6 text-left">
+        <h2 class="text-[18px] font-semibold mb-3">iOS beta (TestFlight)</h2>
+        <p class="text-text-secondary text-[14.5px] leading-body mb-4">
+          After your application is approved, we’ll email you a TestFlight invite.
+        </p>
+        <a
+          href="/en/beta"
+          class="inline-flex items-center justify-center h-11 px-6 rounded-btn bg-accent hover:bg-accent/90 text-white text-[14px] font-semibold transition"
+        >
+          Join the beta
+        </a>
+      </div>
+
+      <div class="bg-bg-secondary border border-border rounded-card p-7 text-left">
+        <h2 class="text-[18px] font-semibold mb-3">Android beta</h2>
+        <p class="text-text-secondary text-[14.5px] leading-body">
+          The Android beta opens around the same time.<br />
+          Sign up using the same form above.
+        </p>
+      </div>
+    </div>
+  </Section>
+</BaseLayout>

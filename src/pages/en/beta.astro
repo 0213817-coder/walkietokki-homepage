@@ -1,0 +1,36 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Section from '../../components/Section.astro';
+---
+<BaseLayout lang="en" title="Join the beta" description="Sign up for the WalkieTokki beta">
+  <Section>
+    <div class="max-w-2xl mx-auto text-center mb-10">
+      <span class="inline-block px-3 py-1.5 rounded-full bg-accent-soft text-accent text-[12px] font-medium tracking-tight mb-6">
+        Now in beta
+      </span>
+      <h1 class="text-[32px] md:text-[40px] font-bold tracking-tighter mb-4 leading-tight">
+        Bring a friend you’d love to ride with
+      </h1>
+      <p class="text-text-secondary text-[15px] md:text-[16px] leading-body">
+        WalkieTokki shines when you’re not riding alone.<br class="hidden sm:block" />
+        We’d love it if you signed up with someone you actually ride with.
+      </p>
+    </div>
+
+    <div class="max-w-2xl mx-auto bg-bg-secondary border border-border rounded-card overflow-hidden">
+      <iframe
+        src="https://tally.so/r/7RpyVL?transparentBackground=1"
+        width="100%"
+        height="780"
+        frameborder="0"
+        title="WalkieTokki beta signup"
+        loading="lazy"
+        class="block bg-transparent"
+      ></iframe>
+    </div>
+
+    <p class="text-center text-text-tertiary text-[13px] mt-8">
+      We’ll reach out within 3 business days by email or text.
+    </p>
+  </Section>
+</BaseLayout>

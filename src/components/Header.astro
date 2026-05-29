@@ -1,0 +1,35 @@
+---
+import { t, type Lang } from '../i18n/strings';
+interface Props {
+  lang: Lang;
+  noNav?: boolean;
+}
+const { lang, noNav = false } = Astro.props;
+const s = t(lang);
+const home = lang === 'ko' ? '/' : '/en/';
+---
+
+<header class="sticky top-0 z-40 backdrop-blur-md bg-black/70 border-b border-border">
+  <div class="max-w-container mx-auto px-5 sm:px-8 h-[64px] flex items-center justify-between">
+    <a href={home} class="flex items-center gap-2.5">
+      <img src="/assets/walkietokki-icon.png" alt="" width="28" height="28" class="rounded-md" />
+      <span class="font-semibold text-[17px] tracking-tight">{s.meta.siteName}</span>
+    </a>
+
+    {!noNav && (
+      <nav class="hidden md:flex items-center gap-7 text-[14px] text-text-secondary">
+        <a href={`${home}#features`} class="hover:text-text-primary transition">{s.nav.features}</a>
+        <a href={`${home}#how`} class="hover:text-text-primary transition">{s.nav.howItWorks}</a>
+        <a href={`${home}#reviews`} class="hover:text-text-primary transition">{s.nav.reviews}</a>
+        <a href={s.nav.langSwitchHref} class="hover:text-text-primary transition">{s.nav.langSwitch}</a>
+      </nav>
+    )}
+
+    <a
+      href={s.hero.ctaPrimaryHref}
+      class="inline-flex items-center justify-center h-9 px-4 rounded-full bg-accent hover:bg-accent/90 text-white text-[13px] font-semibold transition"
+    >
+      {s.nav.beta}
+    </a>
+  </div>
+</header>

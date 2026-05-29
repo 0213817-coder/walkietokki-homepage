@@ -1,0 +1,26 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Section from '../components/Section.astro';
+---
+<BaseLayout lang="ko" title="후기" description="베타 라이더들의 후기">
+  <Section>
+    <div class="max-w-2xl mx-auto text-center">
+      <h1 class="text-[32px] md:text-[40px] font-bold tracking-tighter mb-4">베타 라이더들의 후기</h1>
+      <p class="text-text-secondary leading-body mb-12">
+        실제 사용자분들의 이야기는 정식 출시 즈음에 모아 올릴게요.<br />
+        지금은 직접 사용해보시는 게 가장 빠릅니다.
+      </p>
+
+      <div class="bg-bg-secondary border border-border rounded-card p-10 text-text-tertiary">
+        곧 만나봐요.
+      </div>
+
+      <a
+        href="/beta"
+        class="mt-10 inline-flex items-center justify-center h-12 px-7 rounded-btn bg-accent hover:bg-accent/90 text-white font-semibold transition"
+      >
+        베타 신청하기
+      </a>
+    </div>
+  </Section>
+</BaseLayout>

@@ -1,0 +1,11 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Section from '../components/Section.astro';
+import { renderLegalDoc } from '../lib/legal';
+const html = renderLegalDoc('terms');
+---
+<BaseLayout lang="ko" title="서비스 이용약관" description="워키토끼 서비스 이용약관">
+  <Section>
+    <article class="prose-doc" set:html={html} />
+  </Section>
+</BaseLayout>

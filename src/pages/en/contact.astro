@@ -1,0 +1,34 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Section from '../../components/Section.astro';
+---
+<BaseLayout lang="en" title="Contact" description="Get in touch with WalkieTokki">
+  <Section>
+    <div class="max-w-xl mx-auto">
+      <h1 class="text-[32px] md:text-[40px] font-bold tracking-tighter mb-4">Contact</h1>
+      <p class="text-text-secondary leading-body mb-10">
+        Bug reports, feedback, partnerships — all welcome.<br />
+        If you can, please share your phone model and headset; it helps us help you faster.
+      </p>
+
+      <div class="bg-bg-secondary border border-border rounded-card p-7">
+        <div class="text-text-tertiary text-[13px] mb-2">Email</div>
+        <a
+          href="mailto:support@walkietokki.com"
+          class="text-[18px] md:text-[20px] font-semibold text-accent hover:underline"
+        >
+          support@walkietokki.com
+        </a>
+        <p class="text-text-secondary text-[13.5px] mt-4 leading-body">
+          We reply within 1–3 business days.
+        </p>
+      </div>
+
+      <div class="mt-6 bg-bg-secondary border border-border rounded-card p-7 text-[13.5px] text-text-secondary leading-body">
+        <p class="font-semibold text-text-primary mb-2">Company</p>
+        <p>Wikid Production · Business Reg. No. 248-02-04034</p>
+        <p>Gangnam-gu, Seoul, South Korea</p>
+      </div>
+    </div>
+  </Section>
+</BaseLayout>

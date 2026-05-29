@@ -1,0 +1,50 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Section from '../../components/Section.astro';
+
+const items = [
+  { name: 'Agora Voice SDK', license: 'Commercial (Agora)', url: 'https://www.agora.io/en/terms-of-service/' },
+  { name: 'Firebase iOS SDK', license: 'Apache 2.0', url: 'https://github.com/firebase/firebase-ios-sdk/blob/main/LICENSE' },
+  { name: 'Firebase Android SDK', license: 'Apache 2.0', url: 'https://github.com/firebase/firebase-android-sdk/blob/main/LICENSE' },
+  { name: 'Kakao iOS SDK', license: 'Apache 2.0', url: 'https://github.com/kakao/kakao-ios-sdk/blob/master/LICENSE' },
+  { name: 'Google Sign-In SDK', license: 'Apache 2.0', url: 'https://developers.google.com/identity/sign-in/web/legal-notices' },
+  { name: 'Astro', license: 'MIT', url: 'https://github.com/withastro/astro/blob/main/LICENSE' },
+  { name: 'Tailwind CSS', license: 'MIT', url: 'https://github.com/tailwindlabs/tailwindcss/blob/main/LICENSE' },
+  { name: 'Pretendard', license: 'OFL 1.1', url: 'https://github.com/orioncactus/pretendard/blob/main/LICENSE' },
+];
+---
+<BaseLayout lang="en" title="Open source licenses" description="Open source notices used in WalkieTokki">
+  <Section>
+    <div class="max-w-2xl mx-auto">
+      <h1 class="text-[32px] md:text-[40px] font-bold tracking-tighter mb-3">Open source</h1>
+      <p class="text-text-secondary leading-body mb-10">
+        WalkieTokki is built thanks to the open source and commercial SDKs below. Huge thanks to each library’s maintainers.
+      </p>
+
+      <div class="bg-bg-secondary border border-border rounded-card divide-y divide-border">
+        {items.map((it) => (
+          <div class="flex items-center justify-between gap-4 px-5 py-4 text-[14.5px]">
+            <div>
+              <div class="font-semibold">{it.name}</div>
+              <a href={it.url} target="_blank" rel="noopener" class="text-text-secondary hover:text-text-primary transition">
+                {it.license}
+              </a>
+            </div>
+            <a
+              href={it.url}
+              target="_blank"
+              rel="noopener"
+              class="shrink-0 text-accent hover:text-accent/80 text-[13px] font-medium"
+            >
+              License →
+            </a>
+          </div>
+        ))}
+      </div>
+
+      <p class="text-text-tertiary text-[13px] mt-8 leading-body">
+        The full dependency tree is available inside the app under Settings → Open source licenses.
+      </p>
+    </div>
+  </Section>
+</BaseLayout>

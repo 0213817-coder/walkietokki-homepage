@@ -1,0 +1,15 @@
+---
+interface Props {
+  id?: string;
+  className?: string;
+  /** 큰 섹션 (100/60px) vs 작은 섹션(60/40px) */
+  size?: 'lg' | 'md';
+}
+const { id, className = '', size = 'lg' } = Astro.props;
+const pad = size === 'lg' ? 'py-[60px] md:py-[100px]' : 'py-[40px] md:py-[60px]';
+---
+<section id={id} class={`${pad} ${className}`}>
+  <div class="max-w-container mx-auto px-5 sm:px-8">
+    <slot />
+  </div>
+</section>

@@ -1,0 +1,58 @@
+---
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { t, type Lang } from '../i18n/strings';
+
+interface Props {
+  lang?: Lang;
+  title?: string;
+  description?: string;
+  /** /terms 같이 메인 nav 항목 비활성화하고 싶을 때 */
+  noNav?: boolean;
+}
+
+const { lang = 'ko', title, description, noNav = false } = Astro.props;
+const s = t(lang);
+const meta = s.meta;
+const fullTitle = title ? `${title} — ${meta.siteName}` : `${meta.siteName} — ${meta.tagline}`;
+const desc = description ?? meta.description;
+const siteUrl = 'https://walkietokki.com';
+const ogImage = `${siteUrl}/assets/og-image.png`;
+---
+
+<!doctype html>
+<html lang={lang === 'ko' ? 'ko' : 'en'}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={desc} />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="theme-color" content="#000000" />
+
+    <!-- OG / Twitter -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={desc} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:url" content={siteUrl} />
+    <meta property="og:site_name" content={meta.siteName} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={desc} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <link rel="canonical" href={`${siteUrl}${Astro.url.pathname}`} />
+  </head>
+  <body class="min-h-screen bg-bg-primary text-text-primary">
+    <Header lang={lang} noNav={noNav} />
+    <main>
+      <slot />
+    </main>
+    <Footer lang={lang} />
+  </body>
+</html>

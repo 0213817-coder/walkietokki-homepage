@@ -1,0 +1,27 @@
+---
+import { t, type Lang } from '../i18n/strings';
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const s = t(lang);
+const f = s.footer;
+const year = new Date().getFullYear();
+---
+
+<footer class="border-t border-border mt-24">
+  <div class="max-w-container mx-auto px-5 sm:px-8 py-12 text-text-secondary text-[13px] leading-relaxed">
+    <div class="flex flex-wrap gap-5 mb-4">
+      {f.links.map((l) => (
+        <a href={l.href} class="hover:text-text-primary transition">{l.label}</a>
+      ))}
+    </div>
+    <div class="space-y-1">
+      <p>© {year} {f.company} · {f.brn}</p>
+      <p>{f.address}</p>
+      <p>
+        <a href={`mailto:${f.email}`} class="hover:text-text-primary transition">{f.email}</a>
+      </p>
+    </div>
+  </div>
+</footer>
