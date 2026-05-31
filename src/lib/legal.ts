@@ -1,6 +1,9 @@
 import { marked } from 'marked';
-import termsRaw from '../content/ko/terms.md?raw';
-import privacyRaw from '../content/ko/privacy.md?raw';
+import koTerms from '../content/ko/terms.md?raw';
+import koPrivacy from '../content/ko/privacy.md?raw';
+import enTerms from '../content/en/terms.md?raw';
+import enPrivacy from '../content/en/privacy.md?raw';
+import type { Lang } from '../i18n/strings';
 
 /**
  * 내부 메모 섹션(변호사 review / placeholder 체크리스트)을 잘라낸다.
@@ -29,11 +32,14 @@ function stripInternalSections(md: string): string {
 }
 
 const sources = {
-  terms: termsRaw,
-  privacy: privacyRaw,
+  ko: { terms: koTerms, privacy: koPrivacy },
+  en: { terms: enTerms, privacy: enPrivacy },
 } as const;
 
-export function renderLegalDoc(slug: 'terms' | 'privacy'): string {
-  const cleaned = stripInternalSections(sources[slug]);
+export function renderLegalDoc(
+  slug: 'terms' | 'privacy',
+  lang: Lang = 'ko',
+): string {
+  const cleaned = stripInternalSections(sources[lang][slug]);
   return marked.parse(cleaned, { async: false }) as string;
 }

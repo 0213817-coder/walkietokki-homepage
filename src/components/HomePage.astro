@@ -75,7 +75,7 @@ const moreIcons = [
     </p>
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
       {s.coreFeatures.items.map((it) => (
-        <div class="bg-bg-secondary border border-border rounded-card p-6 hover:bg-bg-tertiary transition flex flex-col">
+        <div class="bg-bg-secondary border border-border rounded-card p-6 hover:bg-bg-tertiary transition flex flex-col h-full">
           <img
             src={`/assets/${it.icon}`}
             alt=""
@@ -86,7 +86,7 @@ const moreIcons = [
             decoding="async"
           />
           <h3 class="text-[17px] font-semibold tracking-tight mb-2 leading-snug">{it.title}</h3>
-          <p class="text-text-secondary leading-body text-[14px]">{it.body}</p>
+          <p class="text-text-secondary leading-body text-[14px] flex-grow">{it.body}</p>
           {it.note && (
             <div class="mt-4 pt-4 border-t border-border text-[12.5px] text-text-tertiary leading-body">
               {it.note}
