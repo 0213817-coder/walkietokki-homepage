@@ -31,7 +31,7 @@ export const strings = {
           icon: 'rabbit-headphones.png',
           title: '마이크가 있는 블루투스 헤드셋으로 사용',
           body: '가운데 버튼 한 번 톡 누르면 말하기, 다시 누르면 끝. 길게 누를 필요 없어요.',
-          note: 'iOS: 한 번 톡 누르면 송신 / 종료. 갤럭시: 송신 시작 1번, 종료 2번.',
+          note: '',
         },
         {
           icon: 'rabbit-airpods.png',
@@ -188,7 +188,7 @@ export const strings = {
           icon: 'rabbit-headphones.png',
           title: 'Bluetooth headset with a mic',
           body: 'Tap the center button once to talk, tap again to stop. No need to hold.',
-          note: 'iOS: single tap to start / stop. Galaxy: single tap to start, double tap to stop.',
+          note: '',
         },
         {
           icon: 'rabbit-airpods.png',
