@@ -37,7 +37,7 @@ export const strings = {
           icon: 'rabbit-airpods.png',
           title: '이어버즈로 사용',
           body: '헤드셋과는 다르게, 이어버즈는 스템을 톡톡 두 번 누르면 말하기, 다시 두 번 누르면 끝. (AirPods Pro 기준)',
-          note: 'iOS: 두 번 톡 누르면 송신 / 종료. 갤럭시: 이어버즈 PTT 미지원 (Android OS 한계).',
+          note: 'iOS: 두 번 톡 누르면 송신 / 종료. 갤럭시: 송신 시작 1번, 종료 두 번 (AirPods Pro 기준).',
         },
         {
           icon: 'rabbit-qr.png',
@@ -96,11 +96,11 @@ export const strings = {
         },
         {
           q: 'AirPods로도 정말 되나요?',
-          a: '네, iOS 17 이상에서 AirPods Pro 2세대 이상이면 작동합니다. 단, 단일 프레스는 Apple OS 정책상 불가하고 **두 번 프레스**로만 송신 시작/종료가 됩니다. Android에서는 이어버즈의 송신 키 자체가 운영체제에 전달되지 않아 미지원입니다.',
+          a: '네, AirPods Pro 2세대 이상에서 작동합니다. iOS는 단일 프레스가 Apple OS 정책상 불가해 **두 번 프레스**로 송신 시작/종료를 모두 처리합니다. 갤럭시는 **한 번 프레스로 송신 시작, 두 번 프레스로 송신 종료**입니다.',
         },
         {
           q: '갤럭시(Android)에서 송신 키는 어떻게 작동하나요?',
-          a: '갤럭시는 헤드셋의 가운데 버튼을 **송신 시작 1번, 종료 2번** 누르는 방식입니다. iOS의 한 번 톡 방식과는 다르니 처음에 살짝 익숙해지면 손가락 두 번이 자연스러워져요. 이어버즈는 Android OS 한계로 미지원입니다.',
+          a: '갤럭시는 헤드셋의 가운데 버튼을 **송신 시작 1번, 종료 2번** 누르는 방식입니다. iOS의 한 번 톡 방식과는 다르니 처음에 살짝 익숙해지면 손가락 두 번이 자연스러워져요. 이어버즈(AirPods Pro)도 같은 패턴으로 송신 시작 1번, 종료 2번 프레스입니다.',
         },
         {
           q: '갤럭시 송신 음질 모드는 뭐가 다른가요?',
@@ -194,7 +194,7 @@ export const strings = {
           icon: 'rabbit-airpods.png',
           title: 'Earbuds',
           body: 'Unlike headsets, earbuds need a double tap on the stem to start, and another double tap to stop. (AirPods Pro reference)',
-          note: 'iOS: double tap to start / stop. Galaxy: earbud PTT not supported (Android OS limitation).',
+          note: 'iOS: double tap to start / stop. Galaxy: single press to start, double press to stop (AirPods Pro reference).',
         },
         {
           icon: 'rabbit-qr.png',
@@ -253,11 +253,11 @@ export const strings = {
         },
         {
           q: 'AirPods really work for this?',
-          a: 'Yes, on iOS 17+ with AirPods Pro (2nd gen or newer). Note: single-press isn’t possible due to Apple OS policy — only the **double press** starts/stops a transmit. On Android, earbuds’ transmit key isn’t routed to apps, so it’s not supported there.',
+          a: 'Yes, with AirPods Pro (2nd gen or newer). On iOS, single-press isn’t possible due to Apple OS policy — only the **double press** starts/stops a transmit. On Galaxy, it’s **single press to start, double press to stop**.',
         },
         {
           q: 'How does the transmit button work on Galaxy (Android)?',
-          a: 'On Galaxy, the headset center button is **single tap to start, double tap to stop**. This is different from iOS’s single-tap-for-both behavior, but two taps becomes second nature after a few rides. Earbuds aren’t supported on Android due to OS limitations.',
+          a: 'On Galaxy, the headset center button is **single tap to start, double tap to stop**. This is different from iOS’s single-tap-for-both behavior, but two taps becomes second nature after a few rides. AirPods Pro use the same pattern on Galaxy — single press to start, double press to stop.',
         },
         {
           q: 'What are the Galaxy transmit quality modes?',
