@@ -5,17 +5,38 @@ import Section from '../components/Section.astro';
 <BaseLayout lang="ko" title="페이지를 찾을 수 없어요" description="404 — 페이지 없음">
   <Section>
     <div class="max-w-md mx-auto text-center">
-      <img src="/assets/walkietokki-hero.png" alt="" width="160" height="160" class="mx-auto mb-8" />
+      <img
+        src="/assets/walkietokki-hero.png"
+        alt=""
+        width="160"
+        height="160"
+        class="mx-auto mb-8 rounded-[22px]"
+      />
       <h1 class="text-[28px] md:text-[34px] font-bold tracking-tighter mb-3">길을 잃었어요</h1>
       <p class="text-text-secondary leading-body mb-8">
-        찾으시던 페이지가 없거나, 이동했을 수 있어요.
+        찾으시던 페이지가 없거나, 이동했을 수 있어요.<br />
+        아래 링크 중 가까운 곳으로 안내드릴게요.
       </p>
-      <a
-        href="/"
-        class="inline-flex items-center justify-center h-11 px-6 rounded-btn bg-accent hover:bg-accent/90 text-white text-[14px] font-semibold transition"
-      >
-        홈으로 돌아가기
-      </a>
+      <div class="flex flex-wrap justify-center gap-3">
+        <a
+          href="/"
+          class="inline-flex items-center justify-center h-11 px-6 rounded-btn bg-accent hover:bg-accent/90 text-white text-[14px] font-semibold transition"
+        >
+          홈으로
+        </a>
+        <a
+          href="/beta"
+          class="inline-flex items-center justify-center h-11 px-6 rounded-btn bg-bg-secondary hover:bg-bg-tertiary border border-border text-text-primary text-[14px] font-semibold transition"
+        >
+          베타 신청
+        </a>
+        <a
+          href="/#faq"
+          class="inline-flex items-center justify-center h-11 px-6 rounded-btn bg-bg-secondary hover:bg-bg-tertiary border border-border text-text-primary text-[14px] font-semibold transition"
+        >
+          자주 묻는 질문
+        </a>
+      </div>
     </div>
   </Section>
 </BaseLayout>

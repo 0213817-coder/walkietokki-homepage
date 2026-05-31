@@ -2,7 +2,11 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Section from '../components/Section.astro';
 ---
-<BaseLayout lang="ko" title="베타 신청" description="워키토끼 베타 테스트 신청">
+<BaseLayout
+  lang="ko"
+  title="베타 신청"
+  description="워키토끼 베타 테스터 모집 — 친구와 같이 신청해주세요"
+>
   <Section>
     <div class="max-w-2xl mx-auto text-center mb-10">
       <span class="inline-block px-3 py-1.5 rounded-full bg-accent-soft text-accent text-[12px] font-medium tracking-tight mb-6">
@@ -17,6 +21,23 @@ import Section from '../components/Section.astro';
       </p>
     </div>
 
+    {/* 베타 안내 카드 */}
+    <div class="max-w-2xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-3 mb-10">
+      <div class="bg-bg-secondary border border-border rounded-card p-5 text-center">
+        <div class="text-[24px] font-bold text-accent mb-1">한 달</div>
+        <div class="text-[13px] text-text-secondary leading-snug">Pro 전 기능 무료 체험</div>
+      </div>
+      <div class="bg-bg-secondary border border-border rounded-card p-5 text-center">
+        <div class="text-[24px] font-bold text-accent mb-1">iOS + 갤럭시</div>
+        <div class="text-[13px] text-text-secondary leading-snug">두 OS 동시 진행</div>
+      </div>
+      <div class="bg-bg-secondary border border-border rounded-card p-5 text-center">
+        <div class="text-[24px] font-bold text-accent mb-1">3일 이내</div>
+        <div class="text-[13px] text-text-secondary leading-snug">신청 검토 + 초대 발송</div>
+      </div>
+    </div>
+
+    {/* Tally 폼 */}
     <div class="max-w-2xl mx-auto bg-bg-secondary border border-border rounded-card overflow-hidden">
       <iframe
         src="https://tally.so/r/7RpyVL?transparentBackground=1"
@@ -29,8 +50,23 @@ import Section from '../components/Section.astro';
       ></iframe>
     </div>
 
-    <p class="text-center text-text-tertiary text-[13px] mt-8">
-      신청 후 영업일 기준 3일 이내에 이메일/문자로 안내드립니다.
+    <p class="text-center text-text-tertiary text-[13px] mt-8 max-w-xl mx-auto leading-body">
+      신청해주신 정보는 베타 운영 외 용도로 사용되지 않으며,<br class="hidden sm:block" />
+      베타 종료 후 모두 자동 폐기됩니다.
     </p>
+  </Section>
+
+  {/* 베타 단계 안내 */}
+  <Section size="md">
+    <div class="max-w-3xl mx-auto bg-bg-secondary border border-border rounded-card p-7 md:p-8">
+      <h2 class="text-[18px] md:text-[20px] font-semibold mb-4">베타 단계 안내</h2>
+      <ul class="space-y-3 text-text-secondary text-[14px] leading-body">
+        <li class="flex gap-3"><span class="text-accent shrink-0">•</span><span><strong class="text-text-primary">언제까지?</strong> 정식 출시 전까지 운영. 정확한 종료일은 결제 안정성 검증 후 별도 공지.</span></li>
+        <li class="flex gap-3"><span class="text-accent shrink-0">•</span><span><strong class="text-text-primary">필요한 장비?</strong> 자전거 + 마이크 달린 블루투스 헤드셋. 샥즈, AirPods Pro, 일반 골전도 헤드셋 등.</span></li>
+        <li class="flex gap-3"><span class="text-accent shrink-0">•</span><span><strong class="text-text-primary">기록은 어떻게 남나요?</strong> 음성은 서버에 저장되지 않습니다. 라이딩 기록(시간/채널/닉네임)은 폰에 30일간 표시.</span></li>
+        <li class="flex gap-3"><span class="text-accent shrink-0">•</span><span><strong class="text-text-primary">베타 종료 후?</strong> Pro 전환을 선택하시면 그대로 이어서 사용. 선택 안 하시면 무료 플랜(주 3시간)으로 자동 전환.</span></li>
+        <li class="flex gap-3"><span class="text-accent shrink-0">•</span><span><strong class="text-text-primary">버그 보고는?</strong> 앱 내 "설정 → 문의" 또는 <a href="mailto:support@walkietokki.com" class="text-accent hover:underline">support@walkietokki.com</a> 으로 영업일 1~3일 내 응답.</span></li>
+      </ul>
+    </div>
   </Section>
 </BaseLayout>

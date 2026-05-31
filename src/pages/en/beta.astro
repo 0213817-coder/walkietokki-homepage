@@ -2,19 +2,38 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Section from '../../components/Section.astro';
 ---
-<BaseLayout lang="en" title="Join the beta" description="Sign up for the WalkieTokki beta">
+<BaseLayout
+  lang="en"
+  title="Join the beta"
+  description="Sign up for the WalkieTokki beta — bring a friend"
+>
   <Section>
     <div class="max-w-2xl mx-auto text-center mb-10">
       <span class="inline-block px-3 py-1.5 rounded-full bg-accent-soft text-accent text-[12px] font-medium tracking-tight mb-6">
         Now in beta
       </span>
       <h1 class="text-[32px] md:text-[40px] font-bold tracking-tighter mb-4 leading-tight">
-        Bring a friend you’d love to ride with
+        Bring a friend you'd love to ride with
       </h1>
       <p class="text-text-secondary text-[15px] md:text-[16px] leading-body">
-        WalkieTokki shines when you’re not riding alone.<br class="hidden sm:block" />
-        We’d love it if you signed up with someone you actually ride with.
+        WalkieTokki shines when you're not riding alone.<br class="hidden sm:block" />
+        We'd love it if you signed up with someone you actually ride with.
       </p>
+    </div>
+
+    <div class="max-w-2xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-3 mb-10">
+      <div class="bg-bg-secondary border border-border rounded-card p-5 text-center">
+        <div class="text-[24px] font-bold text-accent mb-1">One month</div>
+        <div class="text-[13px] text-text-secondary leading-snug">Full Pro features, free</div>
+      </div>
+      <div class="bg-bg-secondary border border-border rounded-card p-5 text-center">
+        <div class="text-[24px] font-bold text-accent mb-1">iOS + Galaxy</div>
+        <div class="text-[13px] text-text-secondary leading-snug">Both platforms in parallel</div>
+      </div>
+      <div class="bg-bg-secondary border border-border rounded-card p-5 text-center">
+        <div class="text-[24px] font-bold text-accent mb-1">3 days</div>
+        <div class="text-[13px] text-text-secondary leading-snug">Review + invite sent</div>
+      </div>
     </div>
 
     <div class="max-w-2xl mx-auto bg-bg-secondary border border-border rounded-card overflow-hidden">
@@ -29,8 +48,22 @@ import Section from '../../components/Section.astro';
       ></iframe>
     </div>
 
-    <p class="text-center text-text-tertiary text-[13px] mt-8">
-      We’ll reach out within 3 business days by email or text.
+    <p class="text-center text-text-tertiary text-[13px] mt-8 max-w-xl mx-auto leading-body">
+      The information you share is used only for beta operations<br class="hidden sm:block" />
+      and is discarded after the beta ends.
     </p>
+  </Section>
+
+  <Section size="md">
+    <div class="max-w-3xl mx-auto bg-bg-secondary border border-border rounded-card p-7 md:p-8">
+      <h2 class="text-[18px] md:text-[20px] font-semibold mb-4">What the beta looks like</h2>
+      <ul class="space-y-3 text-text-secondary text-[14px] leading-body">
+        <li class="flex gap-3"><span class="text-accent shrink-0">•</span><span><strong class="text-text-primary">Timeline.</strong> The beta runs up to public launch. Exact end date depends on billing verification.</span></li>
+        <li class="flex gap-3"><span class="text-accent shrink-0">•</span><span><strong class="text-text-primary">Gear.</strong> A bike + a Bluetooth headset with a mic. Shokz, AirPods Pro, or any bone-conduction headset.</span></li>
+        <li class="flex gap-3"><span class="text-accent shrink-0">•</span><span><strong class="text-text-primary">Data.</strong> Voice is never stored. Ride history (time/channel/nickname) is shown on your phone for 30 days.</span></li>
+        <li class="flex gap-3"><span class="text-accent shrink-0">•</span><span><strong class="text-text-primary">After the beta?</strong> Continue with Pro, or auto-fall back to Free (3 hrs/week).</span></li>
+        <li class="flex gap-3"><span class="text-accent shrink-0">•</span><span><strong class="text-text-primary">Bug reports?</strong> In-app Settings → Contact, or <a href="mailto:support@walkietokki.com" class="text-accent hover:underline">support@walkietokki.com</a>. We reply within 1–3 business days.</span></li>
+      </ul>
+    </div>
   </Section>
 </BaseLayout>

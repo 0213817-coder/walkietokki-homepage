@@ -7,17 +7,37 @@ import Section from '../components/Section.astro';
     <div class="max-w-2xl mx-auto text-center">
       <h1 class="text-[32px] md:text-[40px] font-bold tracking-tighter mb-4">베타 라이더들의 후기</h1>
       <p class="text-text-secondary leading-body mb-12">
-        실제 사용자분들의 이야기는 정식 출시 즈음에 모아 올릴게요.<br />
-        지금은 직접 사용해보시는 게 가장 빠릅니다.
+        실제로 자전거를 타며 워키토끼를 써본 분들의 이야기는<br class="hidden sm:block" />
+        베타 종료 즈음에 한 데 모아 공개할 예정이에요.
       </p>
 
-      <div class="bg-bg-secondary border border-border rounded-card p-10 text-text-tertiary">
-        곧 만나봐요.
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
+        {[1, 2, 3].map(() => (
+          <div class="bg-bg-secondary border border-border rounded-card p-6 text-left">
+            <div class="flex items-center gap-3 mb-4">
+              <div class="w-10 h-10 rounded-full bg-bg-tertiary"></div>
+              <div>
+                <div class="h-3 w-20 bg-bg-tertiary rounded mb-1.5"></div>
+                <div class="h-2.5 w-14 bg-bg-tertiary/60 rounded"></div>
+              </div>
+            </div>
+            <div class="space-y-2">
+              <div class="h-2.5 bg-bg-tertiary/50 rounded"></div>
+              <div class="h-2.5 bg-bg-tertiary/50 rounded"></div>
+              <div class="h-2.5 w-2/3 bg-bg-tertiary/50 rounded"></div>
+            </div>
+          </div>
+        ))}
       </div>
+
+      <p class="text-text-tertiary text-[13.5px] leading-body mb-8">
+        지금은 직접 사용해보시는 게 가장 빠릅니다.<br />
+        베타 라이더가 되시면 첫 번째 후기 주인공이 될 수도 있어요.
+      </p>
 
       <a
         href="/beta"
-        class="mt-10 inline-flex items-center justify-center h-12 px-7 rounded-btn bg-accent hover:bg-accent/90 text-white font-semibold transition"
+        class="inline-flex items-center justify-center h-12 px-7 rounded-btn bg-accent hover:bg-accent/90 text-white font-semibold transition"
       >
         베타 신청하기
       </a>
