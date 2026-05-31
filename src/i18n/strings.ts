@@ -58,7 +58,7 @@ export const strings = {
       items: [
         {
           title: '라이딩 기록 30일',
-          body: '최근 30일 라이딩 세션이 폰에 표시됩니다. 라이딩 날짜, 채널 코드, 함께 탄 친구, 총 송신 시간이 카드로 정리돼요.',
+          body: '최근 30일 라이딩 세션이 폰에 표시됩니다. 라이딩 날짜, 채널 코드, 함께 탄 친구, 총 시간이 카드로 정리돼요.',
         },
         {
           title: '송신 알림음',
@@ -99,20 +99,12 @@ export const strings = {
           a: '네, AirPods Pro 2세대 이상에서 작동합니다. iOS는 단일 프레스가 Apple OS 정책상 불가해 **두 번 프레스**로 송신 시작/종료를 모두 처리합니다. 갤럭시는 **한 번 프레스로 송신 시작, 두 번 프레스로 송신 종료**입니다.',
         },
         {
-          q: '갤럭시(Android)에서 송신 키는 어떻게 작동하나요?',
-          a: '갤럭시는 헤드셋의 가운데 버튼을 **송신 시작 1번, 종료 2번** 누르는 방식입니다. iOS의 한 번 톡 방식과는 다르니 처음에 살짝 익숙해지면 손가락 두 번이 자연스러워져요. 이어버즈(AirPods Pro)도 같은 패턴으로 송신 시작 1번, 종료 2번 프레스입니다.',
-        },
-        {
           q: '갤럭시 송신 음질 모드는 뭐가 다른가요?',
-          a: '갤럭시는 송신 음질을 두 가지 모드 중 선택할 수 있어요. **고음질 모드**는 통화 전용 채널을 쓰기 때문에 음질이 깨끗하지만, 송신 종료 후 5초 대기가 있고 그 시간이 지나면 3단 송신음으로 "이제 다시 송신 가능" 알려줍니다. **일반 음질 모드**는 대기 시간 없이 바로 재송신 가능하지만, 통화 전용 채널을 쓰지 않아 음질이 다소 떨어집니다. 사이클링 그룹 대화처럼 자주 송수신하는 상황은 일반 음질이, 한 명씩 길게 말하는 상황은 고음질이 어울려요.',
-        },
-        {
-          q: '바람 소리가 정말 줄어드나요?',
-          a: '워키토끼는 4단계 풍절음 억제를 제공합니다. 평속 25km/h 이하는 끄셔도 무방하고, 30~40km/h는 중간, 40km/h 이상은 강하게 설정하시면 친구 목소리만 깨끗하게 전달됩니다. 다운힐이나 맞바람 구간에서 가장 차이가 크게 느껴집니다.',
+          a: '갤럭시는 송신 음질을 두 가지 모드 중 선택할 수 있어요. **고음질 모드**는 통화 전용 채널을 쓰기 때문에 음질이 깨끗하지만, 송신 종료 후 5초 대기가 있고 그 시간이 지나면 3단 송신음으로 "이제 다시 송신 가능" 알려줍니다. **일반 음질 모드**는 대기 시간 없이 바로 재송신 가능하지만, 통화 전용 채널을 쓰지 않아 음질이 다소 떨어집니다.',
         },
         {
           q: '라이딩 기록은 어디서 보나요?',
-          a: '앱 하단 "기록" 탭에서 최근 30일 라이딩이 표시됩니다. 라이딩 날짜, 채널 코드, 함께 탄 친구, 송신한 총 시간이 카드로 정리돼요.',
+          a: '앱 하단 "기록" 탭에서 최근 30일 라이딩이 표시됩니다. 라이딩 날짜, 채널 코드, 함께 탄 친구, 총 시간이 카드로 정리돼요.',
         },
         {
           q: '음성이 서버에 저장되나요?',
@@ -215,7 +207,7 @@ export const strings = {
       items: [
         {
           title: 'Ride history — 30 days',
-          body: 'The last 30 days of rides are shown on your phone: date, channel code, who you rode with, and total transmit time.',
+          body: 'The last 30 days of rides are shown on your phone: date, channel code, who you rode with, and total time.',
         },
         {
           title: 'Transmit reminder',
@@ -256,20 +248,12 @@ export const strings = {
           a: 'Yes, with AirPods Pro (2nd gen or newer). On iOS, single-press isn’t possible due to Apple OS policy — only the **double press** starts/stops a transmit. On Galaxy, it’s **single press to start, double press to stop**.',
         },
         {
-          q: 'How does the transmit button work on Galaxy (Android)?',
-          a: 'On Galaxy, the headset center button is **single tap to start, double tap to stop**. This is different from iOS’s single-tap-for-both behavior, but two taps becomes second nature after a few rides. AirPods Pro use the same pattern on Galaxy — single press to start, double press to stop.',
-        },
-        {
           q: 'What are the Galaxy transmit quality modes?',
-          a: 'On Galaxy you can pick between two transmit modes. **High Quality** uses the call-only channel — cleaner audio, but there’s a 5-second cooldown after each transmit; a 3-step chime tells you when you can transmit again. **Standard** has no cooldown so you can re-transmit immediately, but audio quality is a notch lower because it doesn’t use the call channel. Use Standard for back-and-forth chatter, High Quality for longer solo transmissions.',
-        },
-        {
-          q: 'Does wind noise reduction actually help?',
-          a: 'WalkieTokki has 4 levels. Off is fine under 25 km/h, medium for 30–40 km/h, strong for over 40 km/h. The difference is most obvious on descents and into a headwind.',
+          a: 'On Galaxy you can pick between two transmit modes. **High Quality** uses the call-only channel — cleaner audio, but there’s a 5-second cooldown after each transmit; a 3-step chime tells you when you can transmit again. **Standard** has no cooldown so you can re-transmit immediately, but audio quality is a notch lower because it doesn’t use the call channel.',
         },
         {
           q: 'Where do I see my ride history?',
-          a: 'Under the "Records" tab — the last 30 days of rides as cards (date, channel code, who you rode with, total transmit time).',
+          a: 'Under the "Records" tab — the last 30 days of rides as cards (date, channel code, who you rode with, total time).',
         },
         {
           q: 'Is my voice stored anywhere?',
