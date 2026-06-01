@@ -131,6 +131,10 @@ export const strings = {
           q: '전화가 오면 어떻게 되나요?',
           a: '일반 전화나 카톡 보이스톡이 오면 워키토끼가 자동으로 일시정지되고, 통화가 끝나면 자동으로 복구됩니다. 별도 조작 없이 통화→무전 전환이 매끄럽게 이루어져요. 단, 통화 중에는 다른 친구의 무전이 들리지 않습니다.',
         },
+        {
+          q: '라이딩 중 영상(비디오) 촬영이 되나요?',
+          a: '송신(말하기) 중에는 영상 촬영이 되지 않아요. 마이크를 함께 쓰기 때문이에요. 라이딩 중 영상을 찍고 싶다면 송신만 종료하면 됩니다 — 채널에서 나가는 게 아니라 송신 상태만 끄는 거라, 그대로 채널에 남은 채 촬영할 수 있어요.',
+        },
       ],
     },
     betaBanner: {
@@ -289,6 +293,10 @@ export const strings = {
         {
           q: 'What happens if a phone call comes in?',
           a: 'WalkieTokki pauses automatically and resumes when the call ends. The handover is seamless. During the call, you won’t hear other riders.',
+        },
+        {
+          q: 'Can I record video while riding?',
+          a: 'You can’t record video while you’re transmitting (talking) — the mic is in use. To film during a ride, just end your transmission. You don’t leave the channel; you only turn transmit off, so you can record while staying in the channel.',
         },
       ],
     },
