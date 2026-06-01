@@ -1,7 +1,7 @@
 # WalkieTokki Terms of Service
 
 **Effective date**: 2026-06-01
-**Last updated**: 2026-05-31
+**Last updated**: 2026-06-01
 
 > The Korean version of these Terms is the legally binding text under Korean law. This English version is a non-binding translation provided for the convenience of international users. In case of any conflict between the two, the Korean version prevails.
 
@@ -21,7 +21,7 @@ These Terms set out the conditions, procedures, and the respective rights, oblig
 
 ## Article 3 (Validity and Modification of these Terms)
 
-1. These Terms take effect when the User agrees to them at sign-up.
+1. These Terms take effect when the User agrees to them at sign-up. Before sign-up (sign-in), the Company obtains [Required] agreement to the Terms of Service and [Required] consent to the collection and use of personal information separately, providing a link to the full text of each at the time of consent.
 2. The Company may modify these Terms within the bounds of applicable law and will give in-app or email notice at least 7 days before any change takes effect.
 3. For changes that are materially adverse or significantly impact the User, the Company will give notice at least 30 days in advance and, where required by applicable law, obtain the User's consent.
 4. If the User does not agree to a modified version, the User may discontinue use by deleting their account.
@@ -29,7 +29,7 @@ These Terms set out the conditions, procedures, and the respective rights, oblig
 ## Article 4 (Sign-up)
 
 1. Sign-up is completed by choosing one of Apple Sign-In, Google Sign-In, or Kakao Sign-In.
-2. The Company does not accept sign-ups from children under 14 years of age. Sign-up displays a checkbox confirming that the User is at least 14, and sign-up does not proceed without confirmation.
+2. The Company does not accept sign-ups from children under 14 years of age. During sign-up the User enters their date of birth, and sign-up is blocked if the User is found to be under 14. The date of birth is used only for age verification and is not stored — it is discarded immediately (data minimization).
 3. If a sign-up by a child under 14 is identified, the Company will immediately delete the account. The legal guardian or the User may request immediate deletion at support@walkietokki.com.
 4. The Company may refuse or subsequently terminate a sign-up in any of the following cases:
    - The User signed up using another person's information.
@@ -81,9 +81,11 @@ The Company provides the following:
 
 ## Article 9 (Paid Services and Refunds)
 
+**The paid-service provisions of this Article (billing, auto-renewal, withdrawal, refunds, etc.) apply only from the time the Company actually introduces and launches a paid service such as Pro; the Service is currently provided free of charge.** When a paid service launches, the Company will reflect and give advance notice of the right of withdrawal under Article 17 of the Act on Consumer Protection in Electronic Commerce and the Content Industry Promotion Act, the procedures for cancelling and refunding recurring payments, the Apple/Google in-app billing policies, and the advance-notice procedure for amended terms.
+
 1. Payments, renewals, cancellations, and refund requests for the Pro Subscription are processed through the in-app billing systems of the Apple App Store or Google Play.
 2. The Company will provide the guidance and cooperation necessary to handle withdrawal of subscription, contract termination, and refund requests, within the bounds of each platform's policy and applicable law.
-3. After the first-week free trial, automatic billing begins; unless cancelled at least 24 hours before renewal, the subscription auto-renews at the same price. The Company will provide in-app notice before the free trial ends.
+3. (Once a paid service is introduced) After the first-week free trial, automatic billing begins; unless cancelled at least 24 hours before renewal, the subscription auto-renews at the same price. The Company will provide in-app notice before the free trial ends.
 4. When a free user reaches the weekly usage limit (3 hours/week), they will be automatically removed from the channel; the limit resets on the same weekday of the following week relative to their sign-up date. Where the limit is likely to be reached, the Company may give advance in-app notice.
 5. **Right of Withdrawal of Subscription**: Under Article 17 of the Korean Act on the Consumer Protection in Electronic Commerce, the User may withdraw a subscription within 7 days of payment. However, due to the nature of digital content, the right of withdrawal may be restricted in the following cases:
    - Where the User has already begun using the Service after payment (e.g., completed at least one ride with Pro privileges);
@@ -113,8 +115,8 @@ The Company provides the following:
 ## Article 12 (Limitation of Liability)
 
 1. The Company is not liable for service interruptions caused by reasons not attributable to the Company, such as natural disasters, telecommunications failures, or issues with the User's device.
-2. The Company is not liable for damages arising from information obtained while using the Service, or for accidents that occur during a ride.
-3. **The duty of safe operation while riding rests entirely with the User**, and any distraction caused by headset use is the User's responsibility.
+2. Responsibility for judgments and actions based on information obtained while using the Service rests with the User.
+3. Regarding safety while riding: (i) the User has a duty to comply with the Road Traffic Act and other applicable laws; (ii) the User bears responsibility for accidents and damages caused by the User's unlawful acts or negligence; and (iii) the Company fulfills a reasonable duty of safety guidance, including providing a safety notice on the User's first ride (compliance with laws, wearing protective gear, and using the button instead of operating the screen while riding).
 4. Notwithstanding the foregoing, the Company assumes the corresponding liability for **damages caused by the Company's willful misconduct or gross negligence**.
 5. Any scope of liability not specified in these Terms is governed by applicable law (such as the Act on Regulation of Terms and Conditions and the Civil Act).
 

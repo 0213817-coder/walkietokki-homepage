@@ -1,7 +1,7 @@
 # WalkieTokki Privacy Policy
 
 **Effective date**: 2026-06-01
-**Last updated**: 2026-05-31
+**Last updated**: 2026-06-01
 
 > The Korean version of this Privacy Policy is the legally binding text under Korean law. This English version is a non-binding translation provided for the convenience of international users. In case of any conflict between the two, the Korean version prevails.
 
@@ -30,17 +30,20 @@ Wikid Production (hereinafter "the Company") establishes and discloses the follo
 | Pro launch notification email (optional) | Notify at Pro public launch |
 | Account deletion reason (optional) | Service improvement statistics (anonymous) |
 
-### Items NOT collected
+### Items not collected or stored
 
 - **Real-time GPS location data** (not collected)
 - **Voice recordings** (PTT voice is transmitted only in real time; not stored on servers)
 - **Contacts** (phone numbers, address book)
 - **Payment card information** (handled directly by Apple/Google)
 - **Health information**, **sensitive information**, **unique identifying information** (such as resident registration numbers)
+- **Date of birth** — used only temporarily at sign-up to verify that the User is at least 14; not stored on the Company's servers.
 
 ### Automatically generated technical information
 
-The Company does not collect real-time GPS location data. In the course of providing the Service, security, incident response, and connection establishment, technical information such as IP address, device information, access logs, and error logs may be automatically generated and processed; the Company does not use such information to track the User's location.
+The Company does not collect real-time GPS location data. In the course of providing the Service, security, incident response, and connection establishment, technical information such as IP address, device information, access logs, and error logs (including records via diagnostic tools such as Firebase Crashlytics) may be automatically generated and processed; the Company does not use such information to track the User's location.
+
+The Company receives the above sign-up items (email, profile picture, social identifier) from the social sign-in providers (Apple, Google, Kakao); the User consents to this through the [Required] consent to the collection and use of personal information at sign-up.
 
 ## Article 2 (Purposes of Collection and Use)
 
@@ -94,39 +97,45 @@ The Company does not provide Users' personal information to third parties, excep
 1. Where the User has given prior consent;
 2. Where required by law or by a lawful request from an investigative authority.
 
-## Article 5 (Entrustment of Personal Information Processing)
+## Article 5 (Entrustment of Processing and Use of External Services)
 
 To provide the Service smoothly, the Company entrusts certain tasks to external specialists as follows:
 
 | Trustee | Entrusted task | Data storage location |
 |---|---|---|
 | Google LLC (Firebase) | Member authentication, database, Cloud Functions, push notifications | **Seoul, Republic of Korea (asia-northeast3)** |
+| Google LLC (Firebase Crashlytics) | App error diagnostics and stability analysis | United States |
 | Agora.io | Real-time voice communication processing | Entrusted processing (voice signal passes through transiently; not stored on servers) |
 | Apple Inc. | iOS push tokens (PushToTalk Framework) | Apple iCloud infrastructure |
 | Google LLC | Android push (Firebase Cloud Messaging) | Google infrastructure |
-| Kakao Corp. | Social sign-in (at sign-up only) | Kakao infrastructure |
+
+**Relationship with social sign-in providers**: When the User chooses Apple, Google, or Kakao social sign-in, the Company receives from that provider the identifier, email, profile picture, and other information necessary for sign-up and login. The User can review and consent to the items provided on each social sign-in provider's consent screen.
 
 ## Article 5-2 (Cross-Border Transfer of Personal Information)
 
-The Company transfers personal information abroad only where the requirements of the Personal Information Protection Act and other applicable laws are met. Where overseas processing or storage is necessary for cloud, push notifications, real-time voice communication, or incident recovery, the Company discloses in this Policy the items transferred, the recipients, the destination countries, the times and methods of transfer, and the retention/use periods.
+The database (Cloud Firestore) where the Company stores User information and its serverless processing (Cloud Functions) are located in the Seoul region (asia-northeast3) of the Republic of Korea, and **stored data such as email, nickname, and ride records is kept domestically (Seoul).** However, the following items may be transferred (processed) abroad in the course of providing the Service.
 
-### Required cross-border transfers (essential for the Service)
+The cross-border transfers below constitute entrusted processing/storage for the provision of the Service; in accordance with Article 28-8(1)3 of the Personal Information Protection Act, the Company gives notice of the relevant matters by disclosing them in this Privacy Policy. The Company implements the protective measures required by applicable law and manages and supervises its trustees in the course of cross-border transfer.
 
-| Items transferred | Recipient | Country | Time and method | Retention/use |
-|---|---|---|---|---|
-| Authentication tokens, ride records, nicknames | Google LLC (Firebase) | Seoul, Korea (asia-northeast3) in principle; the United States, etc. for incident recovery | Automatic HTTPS-encrypted transfer | Until withdrawal |
-| iOS push tokens | Apple Inc. | United States | Automatic transfer via PushToTalk Framework | Until withdrawal or token expiry |
-| Android push tokens | Google LLC | United States, etc. | Automatic transfer via FCM | Until withdrawal or token expiry |
-| Real-time voice signals (not stored) | Agora.io | Korea, the United States, etc. (auto-routed) | Transient WebRTC pass-through | Discarded immediately upon call end |
+### Cross-border transfer items (essential for the Service)
+
+| Items transferred | Recipient (trustee) | Country | Time and method | Purpose | Retention/use |
+|---|---|---|---|---|---|
+| Authentication identifier, email | Google LLC (Firebase Authentication) | United States | Real-time transfer (HTTPS) when using the Service, e.g., at login | Member authentication | Until withdrawal |
+| Crash diagnostics (device info, error logs), user identifier (uid) | Google LLC (Firebase Crashlytics) | United States | Automatic transfer when an app error occurs | App stability analysis and error diagnostics | Up to 90 days after collection |
+| Real-time voice stream (not stored) | Agora.io | United States, etc. (global routing) | Real-time transfer during a call (WebRTC); discarded immediately at call end | Real-time voice transmission | Not stored (real-time processing) |
+| iOS push token | Apple Inc. | United States | Automatic transfer when using PushToTalk | Push notifications | Until withdrawal or token expiry |
+| Android push token | Google LLC (FCM) | United States | Automatic transfer | Push notifications | Until withdrawal or token expiry |
+
+> All items above constitute entrusted processing (for performance of the Service) and are not provided to third parties for purposes such as marketing.
 
 ### Optional cross-border transfers
 
 WalkieTokki currently does not operate any optional cross-border transfer items.
 
-### Right to refuse
+### Right to refuse cross-border transfer
 
-- **Required transfers**: refusing may limit the relevant feature or use of the Service.
-- **Optional transfers**: the User may refuse or withdraw consent at any time by contacting support@walkietokki.com.
+The User may refuse the cross-border transfers above. However, as these items are essential to providing the Service, refusal may limit sign-up or the use of the relevant features (login, real-time voice, push notifications, etc.). Refusal may be requested at support@walkietokki.com.
 
 ## Article 6 (Rights of the User and How to Exercise Them)
 
@@ -144,8 +153,8 @@ The rights of legal representatives are equally guaranteed.
 
 ## Article 6-2 (Protection of Children under 14)
 
-1. The Company does not currently allow sign-up by children under 14, and the sign-up flow displays a checkbox confirming that the User is at least 14. Sign-up does not proceed without this confirmation.
-2. If age-verification information such as date of birth is collected in the future, the items, purposes, and retention periods will be reflected in this Policy.
+1. The Company does not allow sign-up by children under 14. During sign-up the User enters their date of birth; if the User is found to be under 14, sign-up is blocked. The date of birth is used only for age verification and is not stored — it is discarded immediately. Accordingly, the Company does not collect the personal information of children under 14.
+2. Because the Company discards the date of birth immediately after age verification, it does not separately store or collect it. If age-verification information is stored or collected in the future, the items, purposes, and retention periods will be reflected in this Policy.
 3. If personal information of a child under 14 is found to have been collected without the consent of a legal guardian, the Company will **delete it without delay**.
 4. Legal guardians or the children themselves may request immediate deletion via support@walkietokki.com; the Company will process such requests within 10 days of receipt.
 
@@ -171,6 +180,10 @@ The Company implements the following measures:
 ## Article 8 (Installation, Operation, and Refusal of Automatic Collection Devices)
 
 WalkieTokki does not collect cookies or advertising identifiers (IDFA/AAID).
+
+## Article 8-2 (Location Information)
+
+The Company does not collect device-based location information such as GPS and does not provide location-based features. Based on the current service structure, the Company considers that it does not constitute a location information business or location-based service under the Act on the Protection and Use of Location Information. If location features are added in the future, the Company will review registration under applicable law and amend this Policy.
 
 ## Article 9 (Special Provisions on Voice Communication)
 
