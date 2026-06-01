@@ -1,6 +1,6 @@
 # WalkieTokki Terms of Service
 
-**Effective date**: 2026-XX-XX
+**Effective date**: 2026-06-01
 **Last updated**: 2026-05-31
 
 > The Korean version of these Terms is the legally binding text under Korean law. This English version is a non-binding translation provided for the convenience of international users. In case of any conflict between the two, the Korean version prevails.

@@ -73,8 +73,8 @@ export const strings = {
           body: '소셜 로그인(Apple/Google/Kakao) 3가지 중 선택. 음성은 서버에 저장되지 않고 P2P 실시간 전송.',
         },
         {
-          title: 'Pro 구독 — 주당 20시간',
-          body: 'Pro는 ₩9,900/월. 가입일 기준 매주 20시간 사용. 무료는 주 3시간 (초과 시 ₩200/시간). 첫 주 무료 체험 포함.',
+          title: 'Pro 플랜 — 주당 20시간 (출시 예정)',
+          body: 'Pro는 월정액 ₩9,900 (출시 예정). 주 20시간 사용. 베타 기간에는 무료로 주 20시간까지 쓰실 수 있어요. 결제는 정식 출시 때 열립니다.',
         },
         {
           title: '갤럭시 송신 음질 선택',
@@ -88,7 +88,7 @@ export const strings = {
       items: [
         {
           q: '워키토끼는 무료인가요?',
-          a: '무료 플랜은 주당 3시간까지 송신 가능합니다. 더 길게 쓰시려면 Pro 구독(₩9,900/월, 주당 20시간)을 추천드려요. 첫 주는 무료 체험이라 결제 없이 Pro 한 주를 써보실 수 있어요. 무료 한도 초과 시에는 시간당 ₩200으로 그때그때 충전해서 쓰실 수도 있습니다.',
+          a: '베타 기간에는 무료로 주 20시간까지 쓰실 수 있어요. 정식 출시 후에는 월정액 ₩9,900 Pro(주 20시간)와 무료 플랜(주 3시간)으로 나뉠 예정이고, 결제는 정식 출시 때 열립니다.',
         },
         {
           q: '주당 시간의 산정 기준은 어떻게 되나요?',
@@ -226,8 +226,8 @@ export const strings = {
           body: 'Sign in with Apple, Google, or Kakao. Voice is sent peer-to-peer in real time and never stored on our servers.',
         },
         {
-          title: 'Pro — 20 hours per week',
-          body: 'Pro is ₩9,900 / month. From your sign-up date, you get 20 hours per week. Free users get 3 hours/week (₩200/hr overage). First week of Pro is free.',
+          title: 'Pro — 20 hours per week (coming soon)',
+          body: 'Pro will be ₩9,900/month (coming soon). 20 hours per week. During the beta, everyone gets 20 hours/week for free. Payments open at official launch.',
         },
         {
           title: 'Galaxy transmit quality modes',
@@ -241,7 +241,7 @@ export const strings = {
       items: [
         {
           q: 'Is WalkieTokki free?',
-          a: 'Free plan gives you 3 hours of transmit time per week. For more, Pro (₩9,900/month) gives you 20 hours per week, and the first week is on us. You can also pay-as-you-go at ₩200/hr if you go over the free limit.',
+          a: 'During the beta, you can use up to 20 hours per week for free. After launch, there will be a ₩9,900/month Pro plan (20 hours/week) and a free plan (3 hours/week); payments open at official launch.',
         },
         {
           q: 'How is the weekly limit calculated?',
