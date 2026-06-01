@@ -130,7 +130,7 @@ The Company provides the following:
 
 ## Supplementary Provisions
 
-These Terms take effect from [Month] [Day], 2026.
+These Terms take effect from June 1, 2026.
 
 ---
 

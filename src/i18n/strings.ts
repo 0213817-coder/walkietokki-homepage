@@ -9,6 +9,7 @@ export const strings = {
       features: '기능',
       faq: '자주 묻는 질문',
       reviews: '후기',
+      download: '다운로드',
       beta: '베타 신청',
       langSwitch: 'EN',
       langSwitchHref: '/en/',
@@ -80,6 +81,10 @@ export const strings = {
           title: '갤럭시 송신 음질 선택',
           body: '갤럭시(Android)는 고음질 모드 / 일반 음질 두 가지 선택. 라이딩 성격에 맞춰 골라 쓰세요.',
         },
+        {
+          title: '음악 들으면서 무전',
+          body: '듣던 음악을 끄지 않아도 돼요. 라이딩 중 음악은 그대로 흐르고, 친구 목소리도 함께 들립니다.',
+        },
       ],
     },
     faq: {
@@ -144,6 +149,7 @@ export const strings = {
       address: '서울특별시 강남구 논현로10길 30',
       email: 'support@walkietokki.com',
       links: [
+        { label: '다운로드', href: '/download' },
         { label: '약관', href: '/terms' },
         { label: '개인정보처리방침', href: '/privacy' },
         { label: '오픈소스', href: '/licenses' },
@@ -162,6 +168,7 @@ export const strings = {
       features: 'Features',
       faq: 'FAQ',
       reviews: 'Reviews',
+      download: 'Download',
       beta: 'Join the beta',
       langSwitch: '한국어',
       langSwitchHref: '/',
@@ -233,6 +240,10 @@ export const strings = {
           title: 'Galaxy transmit quality modes',
           body: 'On Galaxy (Android), pick between High quality and Standard transmit modes. Choose based on how you ride.',
         },
+        {
+          title: 'Music keeps playing',
+          body: 'No need to stop your music. Your tunes keep playing while you ride, with your friends’ voices mixed in on top.',
+        },
       ],
     },
     faq: {
@@ -297,6 +308,7 @@ export const strings = {
       address: '30 Nonhyeon-ro 10-gil, Gangnam-gu, Seoul, South Korea',
       email: 'support@walkietokki.com',
       links: [
+        { label: 'Download', href: '/en/download' },
         { label: 'Terms', href: '/en/terms' },
         { label: 'Privacy', href: '/en/privacy' },
         { label: 'Open source', href: '/en/licenses' },
