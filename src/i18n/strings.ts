@@ -91,6 +91,10 @@ export const strings = {
           a: '무료 플랜은 주당 3시간까지 송신 가능합니다. 더 길게 쓰시려면 Pro 구독(₩9,900/월, 주당 20시간)을 추천드려요. 첫 주는 무료 체험이라 결제 없이 Pro 한 주를 써보실 수 있어요. 무료 한도 초과 시에는 시간당 ₩200으로 그때그때 충전해서 쓰실 수도 있습니다.',
         },
         {
+          q: '주당 시간의 산정 기준은 어떻게 되나요?',
+          a: '가입한 날을 기준으로 시작됩니다. 매주 같은 요일에 사용 시간이 자동으로 재설정돼요. 예를 들어 화요일에 가입하셨다면 매주 화요일마다 한도가 새로 시작됩니다.',
+        },
+        {
           q: '어떤 헤드셋이 필요한가요?',
           a: '마이크가 달린 블루투스 헤드셋이면 모두 가능합니다. 일반적인 골전도 헤드셋, 일반 이어버즈, AirPods Pro 등이 작동합니다. 구체적인 추천 모델은 베타 단계 검증 후 별도 안내드릴 예정이에요.',
         },
@@ -238,6 +242,10 @@ export const strings = {
         {
           q: 'Is WalkieTokki free?',
           a: 'Free plan gives you 3 hours of transmit time per week. For more, Pro (₩9,900/month) gives you 20 hours per week, and the first week is on us. You can also pay-as-you-go at ₩200/hr if you go over the free limit.',
+        },
+        {
+          q: 'How is the weekly limit calculated?',
+          a: 'It starts from your sign-up date. Your usage resets automatically on the same weekday each week. For example, if you signed up on a Tuesday, your limit resets every Tuesday.',
         },
         {
           q: 'What kind of headset do I need?',
