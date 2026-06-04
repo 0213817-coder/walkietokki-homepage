@@ -65,8 +65,16 @@ img {
 }
 .prose-doc ul,
 .prose-doc ol {
-  padding-left: 20px;
+  list-style-position: outside;
+  padding-left: 1.6em;
   margin: 0 0 20px;
+}
+.prose-doc li > p {
+  margin: 0 0 6px;
+}
+.prose-doc li > ul,
+.prose-doc li > ol {
+  margin: 8px 0;
 }
 .prose-doc li {
   margin: 0 0 8px;
@@ -113,4 +121,45 @@ img {
   padding-left: 16px;
   margin: 20px 0;
   color: rgba(255, 255, 255, 0.62);
+}
+
+/* mobile: tighter typography for legal docs */
+@media (max-width: 640px) {
+  .prose-doc {
+    font-size: 14.5px;
+    line-height: 1.65;
+  }
+  .prose-doc h1 {
+    font-size: 25px;
+    margin: 0 0 16px;
+  }
+  .prose-doc h2 {
+    font-size: 19px;
+    margin: 34px 0 12px;
+  }
+  .prose-doc h3 {
+    font-size: 16px;
+    margin: 24px 0 10px;
+  }
+  .prose-doc p,
+  .prose-doc li {
+    margin: 0 0 10px;
+  }
+  .prose-doc li {
+    margin: 0 0 6px;
+  }
+  .prose-doc table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    font-size: 12.5px;
+  }
+  .prose-doc th,
+  .prose-doc td {
+    padding: 8px 10px;
+    min-width: 88px;
+  }
+  .prose-doc hr {
+    margin: 28px 0;
+  }
 }
