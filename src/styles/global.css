@@ -69,6 +69,20 @@ img {
   padding-left: 1.6em;
   margin: 0 0 20px;
 }
+/* Tailwind preflight가 list-style을 제거하므로 마커 복원 */
+.prose-doc ol {
+  list-style-type: decimal;
+}
+.prose-doc ul {
+  list-style-type: disc;
+}
+.prose-doc ul ul,
+.prose-doc ol ul {
+  list-style-type: circle;
+}
+.prose-doc li::marker {
+  color: rgba(255, 255, 255, 0.55);
+}
 .prose-doc li > p {
   margin: 0 0 6px;
 }
