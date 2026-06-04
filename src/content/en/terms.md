@@ -29,7 +29,7 @@ These Terms set out the conditions, procedures, and the respective rights, oblig
 ## Article 4 (Sign-up)
 
 1. Sign-up is completed by choosing one of Apple Sign-In, Google Sign-In, or Kakao Sign-In.
-2. The Company does not accept sign-ups from children under 14 years of age. During sign-up the User enters their date of birth, and sign-up is blocked if the User is found to be under 14. The date of birth is used only for age verification and is not stored — it is discarded immediately (data minimization).
+2. The Company does not accept sign-ups from children under 14 years of age. During sign-up the User enters their date of birth, and sign-up is blocked if the User is found to be under 14. The date of birth is used only for age verification and is not stored — it is discarded immediately (data minimization). If there are reasonable indications that a user may be under 14, the Company may suspend the sign-up or request additional verification.
 3. If a sign-up by a child under 14 is identified, the Company will immediately delete the account. The legal guardian or the User may request immediate deletion at support@walkietokki.com.
 4. The Company may refuse or subsequently terminate a sign-up in any of the following cases:
    - The User signed up using another person's information.
@@ -68,6 +68,7 @@ The Company provides the following:
    - System inspection, repair, or replacement;
    - Force majeure events such as natural disasters or telecommunications failures;
    - Where urgent security measures are required.
+4. The Service is currently in beta (trial operation); features may be changed, added, or discontinued. The Company will endeavor to give advance notice of material changes or discontinuation via in-app notices and, given the nature of a beta service, does not guarantee the completeness or uninterrupted availability of the Service.
 
 ## Article 8 (Withdrawal and Loss of Membership)
 
@@ -108,7 +109,7 @@ The Company provides the following:
 
 ## Article 11 (Special Provisions on Voice Content)
 
-1. PTT voice is transmitted and processed temporarily through Agora services for real-time transmission; the Company does not record or store voice on its servers.
+1. PTT voice is transmitted and processed temporarily through Agora services for real-time transmission; the Company does not record or store voice on its servers. By pressing the transmit (PTT) button, the User is deemed to consent to their voice being transmitted in real time to the other users in the same channel.
 2. Recording, storing, editing, distributing, or providing voice to third parties without the consent of other Users may result in a breach of applicable law and civil or criminal liability.
 3. The Company will cooperate only in response to lawful requests from investigative authorities under applicable law, including the Protection of Communications Secrets Act.
 
