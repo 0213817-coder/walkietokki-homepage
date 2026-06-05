@@ -78,10 +78,6 @@ export const strings = {
           body: 'Pro는 월정액 ₩9,900 (출시 예정). 주 20시간 사용. 베타 기간에는 무료로 주 20시간까지 쓰실 수 있어요. 결제는 정식 출시 때 열립니다.',
         },
         {
-          title: '갤럭시 송신 음질 선택',
-          body: '갤럭시(Android)는 고음질 모드 / 일반 음질 두 가지 선택. 라이딩 성격에 맞춰 골라 쓰세요.',
-        },
-        {
           title: '음악 들으면서 무전',
           body: '듣던 음악을 끄지 않아도 돼요. 라이딩 중 음악은 그대로 흐르고, 친구 목소리도 함께 들립니다.',
         },
@@ -105,11 +101,7 @@ export const strings = {
         },
         {
           q: 'AirPods로도 정말 되나요?',
-          a: '네, AirPods Pro 2세대 이상에서 작동합니다. iOS는 단일 프레스가 Apple OS 정책상 불가해 **두 번 프레스**로 송신 시작/종료를 모두 처리합니다. 갤럭시는 **한 번 프레스로 송신 시작, 두 번 프레스로 송신 종료**입니다.',
-        },
-        {
-          q: '갤럭시 송신 음질 모드는 뭐가 다른가요?',
-          a: '갤럭시는 송신 음질을 두 가지 모드 중 선택할 수 있어요. **고음질 모드**는 통화 전용 채널을 쓰기 때문에 음질이 깨끗하지만, 송신 종료 후 5초 대기가 있고 그 시간이 지나면 3단 송신음으로 "이제 다시 송신 가능" 알려줍니다. **일반 음질 모드**는 대기 시간 없이 바로 재송신 가능하지만, 통화 전용 채널을 쓰지 않아 음질이 다소 떨어집니다.',
+          a: '네, AirPods Pro 2세대 이상에서 작동합니다. iOS는 단일 프레스가 Apple OS 정책상 불가해 두 번 프레스로 송신 시작/종료를 모두 처리합니다. 갤럭시 스마트폰에서는 한 번 프레스로 송신 시작, 두 번 프레스로 송신 종료입니다.',
         },
         {
           q: '라이딩 기록은 어디서 보나요?',
@@ -241,10 +233,6 @@ export const strings = {
           body: 'Pro will be ₩9,900/month (coming soon). 20 hours per week. During the beta, everyone gets 20 hours/week for free. Payments open at official launch.',
         },
         {
-          title: 'Galaxy transmit quality modes',
-          body: 'On Galaxy (Android), pick between High quality and Standard transmit modes. Choose based on how you ride.',
-        },
-        {
           title: 'Music keeps playing',
           body: 'No need to stop your music. Your tunes keep playing while you ride, with your friends’ voices mixed in on top.',
         },
@@ -268,11 +256,7 @@ export const strings = {
         },
         {
           q: 'AirPods really work for this?',
-          a: 'Yes, with AirPods Pro (2nd gen or newer). On iOS, single-press isn’t possible due to Apple OS policy — only the **double press** starts/stops a transmit. On Galaxy, it’s **single press to start, double press to stop**.',
-        },
-        {
-          q: 'What are the Galaxy transmit quality modes?',
-          a: 'On Galaxy you can pick between two transmit modes. **High Quality** uses the call-only channel — cleaner audio, but there’s a 5-second cooldown after each transmit; a 3-step chime tells you when you can transmit again. **Standard** has no cooldown so you can re-transmit immediately, but audio quality is a notch lower because it doesn’t use the call channel.',
+          a: 'Yes, with AirPods Pro (2nd gen or newer). On iOS, single-press isn’t possible due to Apple OS policy — only the double press starts/stops a transmit. On Galaxy smartphones, it’s single press to start, double press to stop.',
         },
         {
           q: 'Where do I see my ride history?',
