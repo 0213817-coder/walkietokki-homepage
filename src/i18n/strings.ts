@@ -74,8 +74,8 @@ export const strings = {
           body: '소셜 로그인(Apple/Google/Kakao) 3가지 중 선택. 음성은 서버에 저장되지 않고 P2P 실시간 전송.',
         },
         {
-          title: 'Pro 플랜 — 주당 20시간 (출시 예정)',
-          body: 'Pro는 월정액 ₩9,900 (출시 예정). 주 20시간 사용. 베타 기간에는 무료로 주 20시간까지 쓰실 수 있어요. 결제는 정식 출시 때 열립니다.',
+          title: '요금제 — Free · Pro · Ultra',
+          body: '무료는 주 3시간. Pro는 월 ₩5,500에 주 10시간, Ultra는 월 ₩9,900에 주 20시간. Pro와 Ultra는 첫 7일 무료 체험.',
         },
         {
           title: '음악 들으면서 무전',
@@ -89,7 +89,7 @@ export const strings = {
       items: [
         {
           q: '워키토끼는 무료인가요?',
-          a: '베타 기간에는 무료로 주 20시간까지 쓰실 수 있어요. 정식 출시 후에는 월정액 ₩9,900 Pro(주 20시간)와 무료 플랜(주 3시간)으로 나뉠 예정이고, 결제는 정식 출시 때 열립니다.',
+          a: '무료 플랜으로 주 3시간까지 쓸 수 있어요. 더 필요하면 Pro(월 ₩5,500 · 주 10시간) 또는 Ultra(월 ₩9,900 · 주 20시간)로 업그레이드할 수 있고, 첫 7일은 무료 체험입니다.',
         },
         {
           q: '주당 시간의 산정 기준은 어떻게 되나요?',
@@ -229,8 +229,8 @@ export const strings = {
           body: 'Sign in with Apple, Google, or Kakao. Voice is sent peer-to-peer in real time and never stored on our servers.',
         },
         {
-          title: 'Pro — 20 hours per week (coming soon)',
-          body: 'Pro will be ₩9,900/month (coming soon). 20 hours per week. During the beta, everyone gets 20 hours/week for free. Payments open at official launch.',
+          title: 'Plans — Free · Pro · Ultra',
+          body: 'Free gives you 3 hours a week. Pro is ₩5,500/month for 10 hours a week, and Ultra is ₩9,900/month for 20 hours a week. Pro and Ultra include a 7-day free trial.',
         },
         {
           title: 'Music keeps playing',
@@ -244,7 +244,7 @@ export const strings = {
       items: [
         {
           q: 'Is WalkieTokki free?',
-          a: 'During the beta, you can use up to 20 hours per week for free. After launch, there will be a ₩9,900/month Pro plan (20 hours/week) and a free plan (3 hours/week); payments open at official launch.',
+          a: 'The free plan gives you up to 3 hours a week. Need more? Upgrade to Pro (₩5,500/month · 10 hours/week) or Ultra (₩9,900/month · 20 hours/week) — the first 7 days are a free trial.',
         },
         {
           q: 'How is the weekly limit calculated?',
