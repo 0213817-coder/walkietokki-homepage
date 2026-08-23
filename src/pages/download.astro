@@ -2,33 +2,35 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Section from '../components/Section.astro';
 ---
-<BaseLayout lang="ko" title="다운로드" description="워키토끼 앱 다운로드 — TestFlight 베타">
+<BaseLayout lang="ko" title="다운로드" description="워키토끼 앱 다운로드 — App Store · Google Play">
   <Section>
     <div class="max-w-2xl mx-auto text-center">
       <span class="inline-block px-3 py-1.5 rounded-full bg-accent-soft text-accent text-[12px] font-medium tracking-tight mb-6">
-        베타 단계
+        정식 출시
       </span>
       <h1 class="text-[32px] md:text-[40px] font-bold tracking-tighter mb-5 leading-tight">
-        곧 정식 출시예요
+        지금 바로 시작하세요
       </h1>
       <p class="text-text-secondary text-[16px] leading-body mb-10">
-        지금은 베타 단계라 초대받은 라이더만 사용 가능합니다.<br />
-        같이 타실 친구와 함께 베타 신청해주세요.
+        앱을 받고 채널 코드만 공유하면 끝이에요.<br />
+        같이 탈 친구도 함께 받아야 대화할 수 있어요.
       </p>
 
       <div class="bg-bg-secondary border border-border rounded-card p-7 mb-5 text-left">
         <div class="flex items-start gap-4 mb-4">
           <div class="shrink-0 w-10 h-10 rounded-lg bg-bg-tertiary flex items-center justify-center text-[15px] font-bold">iOS</div>
           <div>
-            <h2 class="text-[17px] font-semibold mb-1">iPhone (TestFlight)</h2>
-            <p class="text-text-secondary text-[13.5px] leading-body">베타 신청 → 승인 → 이메일로 TestFlight 초대 링크 발송. iOS 16 이상.</p>
+            <h2 class="text-[17px] font-semibold mb-1">iPhone</h2>
+            <p class="text-text-secondary text-[13.5px] leading-body">App Store에서 바로 설치할 수 있어요. iOS 16 이상.</p>
           </div>
         </div>
         <a
-          href="/beta"
+          href="https://apps.apple.com/kr/app/id6764816272"
+          target="_blank"
+          rel="noopener"
           class="inline-flex items-center justify-center h-11 px-6 rounded-btn bg-accent hover:bg-accent/90 text-white text-[14px] font-semibold transition"
         >
-          베타 신청하기
+          App Store에서 받기
         </a>
       </div>
 
@@ -37,20 +39,19 @@ import Section from '../components/Section.astro';
           <div class="shrink-0 w-10 h-10 rounded-lg bg-bg-tertiary flex items-center justify-center text-[14px] font-bold">A</div>
           <div>
             <h2 class="text-[17px] font-semibold mb-1">Galaxy / Android</h2>
-            <p class="text-text-secondary text-[13.5px] leading-body">Google Play 비공개 베타로 운영. Android 7.0 (Nougat) 이상.</p>
+            <p class="text-text-secondary text-[13.5px] leading-body">Google Play 출시 준비 중이에요. 곧 이 페이지에서 안내드릴게요. Android 7.0 이상.</p>
           </div>
         </div>
-        <a
-          href="/beta"
-          class="inline-flex items-center justify-center h-11 px-6 rounded-btn bg-accent hover:bg-accent/90 text-white text-[14px] font-semibold transition"
+        <span
+          class="inline-flex items-center justify-center h-11 px-6 rounded-btn bg-bg-tertiary text-text-secondary text-[14px] font-semibold cursor-default"
         >
-          베타 신청하기
-        </a>
+          곧 만나요
+        </span>
       </div>
 
       <div class="text-left bg-bg-secondary border border-border rounded-card p-7 text-[13.5px] text-text-secondary leading-body">
-        <p class="text-text-primary font-semibold mb-2">정식 출시 시:</p>
-        <p>App Store · Google Play에 검색 한 번이면 설치 가능해집니다. 이 페이지에서 두 스토어 링크를 그대로 안내드릴 예정.</p>
+        <p class="text-text-primary font-semibold mb-2">처음 쓰신다면</p>
+        <p>앱을 열고 채널 코드를 만든 다음, QR이나 코드를 친구에게 공유하세요. 블루투스 헤드셋을 연결하면 버튼 한 번으로 무전할 수 있어요.</p>
       </div>
     </div>
   </Section>

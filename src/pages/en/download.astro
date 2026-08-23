@@ -2,33 +2,35 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Section from '../../components/Section.astro';
 ---
-<BaseLayout lang="en" title="Download" description="Get WalkieTokki — TestFlight beta">
+<BaseLayout lang="en" title="Download" description="Get WalkieTokki — App Store · Google Play">
   <Section>
     <div class="max-w-2xl mx-auto text-center">
       <span class="inline-block px-3 py-1.5 rounded-full bg-accent-soft text-accent text-[12px] font-medium tracking-tight mb-6">
-        In beta
+        Now available
       </span>
       <h1 class="text-[32px] md:text-[40px] font-bold tracking-tighter mb-5 leading-tight">
-        Public launch is close
+        Start riding today
       </h1>
       <p class="text-text-secondary text-[16px] leading-body mb-10">
-        Right now WalkieTokki is invite-only beta.<br />
-        Sign up with a friend you ride with.
+        Install the app and share a channel code — that's it.<br />
+        Your riding buddies need the app too.
       </p>
 
       <div class="bg-bg-secondary border border-border rounded-card p-7 mb-5 text-left">
         <div class="flex items-start gap-4 mb-4">
           <div class="shrink-0 w-10 h-10 rounded-lg bg-bg-tertiary flex items-center justify-center text-[15px] font-bold">iOS</div>
           <div>
-            <h2 class="text-[17px] font-semibold mb-1">iPhone (TestFlight)</h2>
-            <p class="text-text-secondary text-[13.5px] leading-body">Apply → review → TestFlight invite by email. Requires iOS 16+.</p>
+            <h2 class="text-[17px] font-semibold mb-1">iPhone</h2>
+            <p class="text-text-secondary text-[13.5px] leading-body">Available on the App Store. Requires iOS 16+.</p>
           </div>
         </div>
         <a
-          href="/en/beta"
+          href="https://apps.apple.com/kr/app/id6764816272"
+          target="_blank"
+          rel="noopener"
           class="inline-flex items-center justify-center h-11 px-6 rounded-btn bg-accent hover:bg-accent/90 text-white text-[14px] font-semibold transition"
         >
-          Join the beta
+          Get it on the App Store
         </a>
       </div>
 
@@ -37,20 +39,19 @@ import Section from '../../components/Section.astro';
           <div class="shrink-0 w-10 h-10 rounded-lg bg-bg-tertiary flex items-center justify-center text-[14px] font-bold">A</div>
           <div>
             <h2 class="text-[17px] font-semibold mb-1">Galaxy / Android</h2>
-            <p class="text-text-secondary text-[13.5px] leading-body">Closed Play beta. Requires Android 7.0 (Nougat)+.</p>
+            <p class="text-text-secondary text-[13.5px] leading-body">Coming to Google Play shortly — we'll post the link here. Requires Android 7.0+.</p>
           </div>
         </div>
-        <a
-          href="/en/beta"
-          class="inline-flex items-center justify-center h-11 px-6 rounded-btn bg-accent hover:bg-accent/90 text-white text-[14px] font-semibold transition"
+        <span
+          class="inline-flex items-center justify-center h-11 px-6 rounded-btn bg-bg-tertiary text-text-secondary text-[14px] font-semibold cursor-default"
         >
-          Join the beta
-        </a>
+          Coming soon
+        </span>
       </div>
 
       <div class="text-left bg-bg-secondary border border-border rounded-card p-7 text-[13.5px] text-text-secondary leading-body">
-        <p class="text-text-primary font-semibold mb-2">At public launch:</p>
-        <p>You'll be able to install from the App Store and Google Play. We'll surface both store links right here on this page.</p>
+        <p class="text-text-primary font-semibold mb-2">New here?</p>
+        <p>Open the app, create a channel code, then share the code or QR with your friends. Pair a Bluetooth headset and you can talk with a single button press.</p>
       </div>
     </div>
   </Section>

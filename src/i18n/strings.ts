@@ -10,19 +10,19 @@ export const strings = {
       faq: '자주 묻는 질문',
       reviews: '후기',
       download: '다운로드',
-      beta: '베타 신청',
+      beta: '다운로드',
       langSwitch: 'EN',
       langSwitchHref: '/en/',
     },
     hero: {
-      badge: '베타 테스터 모집 중',
+      badge: 'App Store 출시',
       title1: '자전거 친구와',
       title2: '실시간으로 대화하세요.',
       sub1: '헤드셋 버튼 한 번 톡 누르면 송신.',
       sub2: '여러분의 라이딩, 워키토끼가 함께합니다.',
-      ctaPrimary: '베타 신청하기',
+      ctaPrimary: '앱 다운로드',
       ctaSecondary: '자세히 보기',
-      ctaPrimaryHref: '/beta',
+      ctaPrimaryHref: '/download',
     },
     coreFeatures: {
       heading: '핵심 기능',
@@ -85,7 +85,7 @@ export const strings = {
     },
     faq: {
       heading: '자주 묻는 질문',
-      sub: '베타 라이더가 실제로 자주 묻는 질문들을 모았어요.',
+      sub: '라이더들이 실제로 자주 묻는 질문들을 모았어요.',
       items: [
         {
           q: '워키토끼는 무료인가요?',
@@ -97,7 +97,7 @@ export const strings = {
         },
         {
           q: '어떤 헤드셋이 필요한가요?',
-          a: '마이크가 달린 블루투스 헤드셋이면 모두 가능합니다. 일반적인 골전도 헤드셋, 일반 이어버즈, AirPods Pro 등이 작동합니다. 구체적인 추천 모델은 베타 단계 검증 후 별도 안내드릴 예정이에요.',
+          a: '마이크가 달린 블루투스 헤드셋이면 모두 가능합니다. 일반적인 골전도 헤드셋, 일반 이어버즈, AirPods Pro 등이 작동합니다. 구체적인 추천 모델은 사용 데이터가 모이는 대로 안내드릴 예정이에요.',
         },
         {
           q: 'AirPods로도 정말 되나요?',
@@ -130,13 +130,13 @@ export const strings = {
       ],
     },
     betaBanner: {
-      heading: '지금 베타 테스트 모집 중',
-      body: '친구와 함께 한 달간 무료로 사용해보세요.',
-      cta: '베타 신청하기',
-      ctaHref: '/beta',
+      heading: '지금 바로 시작하세요',
+      body: 'App Store에서 워키토끼를 받고, 친구와 같은 채널로 만나요.',
+      cta: '앱 다운로드',
+      ctaHref: '/download',
     },
     reviews: {
-      heading: '베타 라이더들의 후기',
+      heading: '라이더들의 후기',
       placeholder: '곧 만나봐요.',
     },
     footer: {
@@ -165,19 +165,19 @@ export const strings = {
       faq: 'FAQ',
       reviews: 'Reviews',
       download: 'Download',
-      beta: 'Join the beta',
+      beta: 'Download',
       langSwitch: '한국어',
       langSwitchHref: '/',
     },
     hero: {
-      badge: 'Now in beta',
+      badge: 'Now on the App Store',
       title1: 'Talk with your cycling friends',
       title2: 'in real time.',
       sub1: 'One tap on your headset button to transmit.',
       sub2: 'WalkieTokki rides with you.',
-      ctaPrimary: 'Join the beta',
+      ctaPrimary: 'Download the app',
       ctaSecondary: 'Learn more',
-      ctaPrimaryHref: '/en/beta',
+      ctaPrimaryHref: '/en/download',
     },
     coreFeatures: {
       heading: 'Core features',
@@ -240,7 +240,7 @@ export const strings = {
     },
     faq: {
       heading: 'Frequently asked',
-      sub: 'Real questions from real beta riders.',
+      sub: 'Real questions from real riders.',
       items: [
         {
           q: 'Is WalkieTokki free?',
@@ -252,7 +252,7 @@ export const strings = {
         },
         {
           q: 'What kind of headset do I need?',
-          a: 'Any Bluetooth headset with a mic. Bone-conduction headsets, regular earbuds, and AirPods Pro all work. We’ll publish specific recommended models after beta-stage verification.',
+          a: 'Any Bluetooth headset with a mic. Bone-conduction headsets, regular earbuds, and AirPods Pro all work. We’ll publish specific recommended models as usage data comes in.',
         },
         {
           q: 'AirPods really work for this?',
@@ -285,13 +285,13 @@ export const strings = {
       ],
     },
     betaBanner: {
-      heading: 'Beta testing is open',
-      body: 'Ride with your friends for a free month.',
-      cta: 'Join the beta',
-      ctaHref: '/en/beta',
+      heading: 'Start riding today',
+      body: 'Get WalkieTokki on the App Store and meet your friends in the same channel.',
+      cta: 'Download the app',
+      ctaHref: '/en/download',
     },
     reviews: {
-      heading: 'From our beta riders',
+      heading: 'From our riders',
       placeholder: 'Coming soon.',
     },
     footer: {
