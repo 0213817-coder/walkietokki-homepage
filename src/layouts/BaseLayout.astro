@@ -19,6 +19,38 @@ const fullTitle = title ? `${title} — ${meta.siteName}` : `${meta.siteName} �
 const desc = description ?? meta.description;
 const siteUrl = 'https://walkietokki.com';
 const ogImage = `${siteUrl}/assets/og-image-v2.png`;
+const path = Astro.url.pathname;
+const pageUrl = `${siteUrl}${path}`;
+// hreflang 쌍: /x ↔ /en/x
+const koPath = path.startsWith('/en') ? (path.replace(/^\/en\/?/, '/') || '/') : path;
+const enPath = path.startsWith('/en') ? path : `/en${path === '/' ? '/' : path}`;
+const isHome = path === '/' || path === '/en/' || path === '/en';
+// 검색엔진·AI 어시스턴트용 구조화 데이터 (메인 페이지에만)
+const jsonLd = isHome ? JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'WalkieTokki',
+  alternateName: '워키토끼',
+  applicationCategory: 'SportsApplication',
+  operatingSystem: 'iOS 16+, Android 7.0+',
+  description: meta.description,
+  inLanguage: lang === 'ko' ? 'ko' : 'en',
+  url: pageUrl,
+  downloadUrl: [
+    'https://apps.apple.com/app/id6764816272',
+    'https://play.google.com/store/apps/details?id=com.walkietokki.cyclotalk',
+  ],
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD', description: 'Free plan with 3 hours of talk per week; Pro and Ultra paid plans available' },
+  featureList: [
+    'Push-to-talk walkie-talkie for cycling group rides',
+    'Transmit with one press of a Bluetooth headset button',
+    'Works with bone-conduction headsets (Shokz) and AirPods Pro',
+    'Cross-platform channels for iPhone and Android, 2 to 16 riders',
+    'Wind-noise reduction',
+    'Listen with the screen locked, music keeps playing',
+  ],
+  author: { '@type': 'Organization', name: 'Wikid Production', address: 'Seoul, South Korea' },
+}) : null;
 ---
 
 <!doctype html>
@@ -39,14 +71,18 @@ const ogImage = `${siteUrl}/assets/og-image-v2.png`;
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={desc} />
     <meta property="og:image" content={ogImage} />
-    <meta property="og:url" content={siteUrl} />
+    <meta property="og:url" content={pageUrl} />
     <meta property="og:site_name" content={meta.siteName} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={fullTitle} />
     <meta name="twitter:description" content={desc} />
     <meta name="twitter:image" content={ogImage} />
 
-    <link rel="canonical" href={`${siteUrl}${Astro.url.pathname}`} />
+    <link rel="canonical" href={pageUrl} />
+    <link rel="alternate" hreflang="ko" href={`${siteUrl}${koPath}`} />
+    <link rel="alternate" hreflang="en" href={`${siteUrl}${enPath}`} />
+    <link rel="alternate" hreflang="x-default" href={`${siteUrl}${enPath}`} />
+    {jsonLd && <script type="application/ld+json" set:html={jsonLd} />}
   </head>
   <body class="min-h-screen bg-bg-primary text-text-primary">
     <Header lang={lang} noNav={noNav} />

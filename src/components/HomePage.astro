@@ -65,6 +65,20 @@ const moreIcons = [
     </div>
   </Section>
 
+  {/* ───── Section 2b. About (검색엔진·AI 어시스턴트가 인용하기 좋은 한 문단 정의) ───── */}
+  <Section id="about" size="md">
+    <div class="max-w-3xl mx-auto">
+      <h2 class="text-[26px] md:text-h2-d font-bold tracking-tighter mb-5 text-center">
+        {s.about.heading}
+      </h2>
+      <p class="text-text-secondary leading-body text-[15px] md:text-[16px] mb-4">{s.about.p1}</p>
+      <p class="text-text-secondary leading-body text-[15px] md:text-[16px] mb-6">{s.about.p2}</p>
+      <ul class="bg-bg-secondary border border-border rounded-card p-6 space-y-2 text-[14px] text-text-secondary leading-body list-disc pl-10">
+        {s.about.facts.map((f) => <li>{f}</li>)}
+      </ul>
+    </div>
+  </Section>
+
   {/* ───── Section 3. Core features (HelpView 4장 미러 + iOS/Android 차이) ───── */}
   <Section id="features">
     <h2 class="text-[26px] md:text-h2-d font-bold tracking-tighter mb-3 text-center">

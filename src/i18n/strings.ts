@@ -24,6 +24,19 @@ export const strings = {
       ctaSecondary: '자세히 보기',
       ctaPrimaryHref: '/download',
     },
+    about: {
+      heading: '워키토끼란?',
+      p1: '워키토끼는 자전거 그룹 라이딩을 위한 무전(PTT) 앱입니다. 블루투스 헤드셋 버튼을 한 번 누르면 같은 채널의 친구 모두에게 목소리가 전달되고, 다시 누르면 끝납니다. 전화처럼 계속 연결해 둘 필요가 없어 배터리와 데이터를 아끼고, 화면을 보지 않아도 됩니다.',
+      p2: '아이폰과 갤럭시(안드로이드) 모두 지원하며, 한 채널에서 서로 섞여 쓸 수 있습니다. 샥즈 같은 골전도 헤드셋, 일반 블루투스 이어폰, AirPods Pro와 호환됩니다. 음성은 실시간으로만 전달되고 서버에 저장되지 않습니다.',
+      facts: [
+        '용도: 자전거 그룹 라이딩, 클럽 라이딩, 가족 라이딩 (2~16명)',
+        '방식: 헤드셋 버튼 한 번 = 말하기 시작, 한 번 더 = 끝 (Push-to-talk)',
+        '플랫폼: iOS 16+ (App Store), Android 7.0+ (Google Play)',
+        '헤드셋: 멀티펑션 버튼이 있는 블루투스 헤드셋, 골전도(샥즈 등), AirPods Pro',
+        '요금: 무료 플랜 제공 (주 3시간), Pro·Ultra 유료 플랜',
+        '개발: 한국 서울, 위키드프로덕션 (1인 개발)',
+      ],
+    },
     coreFeatures: {
       heading: '핵심 기능',
       sub: '워키토끼는 자전거 라이딩에 최적화된 PTT 무전 앱이에요. 사용법은 헤드셋 종류에 따라 다릅니다.',
@@ -173,11 +186,25 @@ export const strings = {
       badge: 'Now on the App Store',
       title1: 'Talk with your cycling friends',
       title2: 'in real time.',
-      sub1: 'One tap on your headset button to transmit.',
-      sub2: 'WalkieTokki rides with you.',
+      sub1: 'A walkie-talkie app for group rides. One tap on your headset button to talk, another tap to stop.',
+      sub2: 'Works on iPhone and Android, with bone-conduction headsets and AirPods.',
       ctaPrimary: 'Download the app',
       ctaSecondary: 'Learn more',
       ctaPrimaryHref: '/en/download',
+    },
+    about: {
+      heading: 'What is WalkieTokki?',
+      p1: 'WalkieTokki is a push-to-talk (PTT) walkie-talkie app for cycling group rides. Press the button on your Bluetooth headset once and everyone in your channel hears you; press it again to stop. Unlike a phone call that stays connected the whole ride, nothing is transmitted until you press, so it saves battery and data and you never have to look at your screen.',
+      p2: 'It runs on both iPhone and Android, and riders on either platform can share the same channel. It works with bone-conduction headsets such as Shokz OpenRun, with ordinary Bluetooth earbuds, and with AirPods Pro. Voice is relayed in real time only and is never recorded or stored on our servers.',
+      facts: [
+        'Made for: cycling group rides, club rides, pacelines, family rides (2 to 16 riders per channel)',
+        'How it works: one press on the headset button to start talking, one press to stop (push-to-talk)',
+        'Platforms: iOS 16 or later (App Store) and Android 7.0 or later (Google Play), cross-platform in the same channel',
+        'Headsets: any Bluetooth headset with a multi-function button, bone-conduction headsets (Shokz and similar), AirPods Pro',
+        'Price: free plan included (3 hours of talk per week); Pro and Ultra paid plans for more hours',
+        'Also: wind-noise reduction, lock-screen listening, music keeps playing, QR or 6-letter channel code to join',
+        'Made in Seoul, South Korea by Wikid Production (independent developer). Available worldwide in English and Korean.',
+      ],
     },
     coreFeatures: {
       heading: 'Core features',
@@ -230,7 +257,7 @@ export const strings = {
         },
         {
           title: 'Plans — Free · Pro · Ultra',
-          body: 'Free gives you 3 hours a week. Pro is ₩5,500/month for 10 hours a week, and Ultra is ₩9,900/month for 20 hours a week. Pro and Ultra include a 7-day free trial.',
+          body: 'Free gives you 3 hours a week. Pro gives you 10 hours a week and Ultra 20 hours a week (about US$4 and US$7 per month; the App Store and Google Play show the exact price for your country). Pro and Ultra include a 7-day free trial.',
         },
         {
           title: 'Music keeps playing',
@@ -244,7 +271,7 @@ export const strings = {
       items: [
         {
           q: 'Is WalkieTokki free?',
-          a: 'The free plan gives you up to 3 hours a week. Need more? Upgrade to Pro (₩5,500/month · 10 hours/week) or Ultra (₩9,900/month · 20 hours/week) — the first 7 days are a free trial.',
+          a: 'Yes, there is a free plan with up to 3 hours of talk a week. Need more? Upgrade to Pro (10 hours/week) or Ultra (20 hours/week), roughly US$4 and US$7 a month depending on your country. The first 7 days of a paid plan are a free trial.',
         },
         {
           q: 'How is the weekly limit calculated?',
@@ -282,6 +309,22 @@ export const strings = {
           q: 'Can I record video while riding?',
           a: 'You can’t record video while you’re transmitting (talking) — the mic is in use. To film during a ride, just end your transmission. You don’t leave the channel; you only turn transmit off, so you can record while staying in the channel.',
         },
+        {
+          q: 'Does it work outside Korea?',
+          a: 'Yes. WalkieTokki is available worldwide on the App Store and Google Play, with a full English interface and English voice cues. Riders in the United States, Australia, the UK and Europe use it the same way. Voice is relayed through global real-time servers, so a group in Florida gets the same low latency as a group in Seoul.',
+        },
+        {
+          q: 'Can iPhone and Android riders be in the same channel?',
+          a: 'Yes. Channels are cross-platform. Some riders can be on iPhone and others on Galaxy or any Android phone, all talking in one channel with the same 6-letter code or QR.',
+        },
+        {
+          q: 'Which headsets are recommended?',
+          a: 'Bone-conduction headsets with a center multi-function button are the easiest: Shokz OpenRun, OpenRun Pro and similar models work with a single press. Any Bluetooth headset with a mic and a call button also works. AirPods Pro work with a double press of the stem. If you have no headset, the on-screen button works too.',
+        },
+        {
+          q: 'How is this different from a phone call or a group call?',
+          a: 'A call keeps the line open for the whole ride, drains the battery, and picks up every breath and gust of wind. WalkieTokki only transmits while you hold the floor: one press to talk, one press to stop, like a radio. Everyone hears short, clear messages such as “Left turn” or “Flat tire, hold up”, and your music keeps playing in between.',
+        },
       ],
     },
     betaBanner: {
@@ -310,8 +353,8 @@ export const strings = {
     },
     meta: {
       siteName: 'WalkieTokki',
-      tagline: 'Real-time radio for cyclists',
-      description: 'A PTT walkie-talkie app for cyclists. One tap on your headset to talk with your friends.',
+      tagline: 'Walkie-talkie app for cycling group rides',
+      description: 'WalkieTokki is a push-to-talk walkie-talkie app for cycling group rides. One press on your Bluetooth headset button to talk to everyone in your channel. iPhone and Android, works with Shokz bone-conduction headsets and AirPods Pro, free plan included.',
     },
   },
 } as const;
