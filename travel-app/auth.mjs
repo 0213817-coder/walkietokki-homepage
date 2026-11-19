@@ -14,7 +14,7 @@ export async function authorize(request,config,fetcher=fetch){
   const h=parse(parts[0]),p=parse(parts[1]),now=Date.now()/1000;
   if(h.alg!=='RS256'||typeof h.kid!=='string'||p.iss!==config.team||!Array.isArray(p.aud)||!p.aud.includes(config.aud)||typeof p.exp!=='number'||p.exp<=now||typeof p.iat!=='number'||p.iat>now+60||(p.nbf!==undefined&&(typeof p.nbf!=='number'||p.nbf>now))||typeof p.email!=='string'||p.email.toLowerCase()!==config.email)return false;
   if(!cached||cached.team!==config.team||cached.until<Date.now()||!cached.keys.some(k=>k.kid===h.kid)){
-   const r=await fetcher(config.team+'/cdn-cgi/access/certs',{redirect:'error',signal:AbortSignal.timeout(5000)});if(!r.ok)return false;
+   const r=await fetcher(config.team+'/cdn-cgi/access/certs',{redirect:'manual',signal:AbortSignal.timeout(5000)});if(!r.ok)return false;
    const body=await r.json();if(!Array.isArray(body.keys))return false;cached={team:config.team,until:Date.now()+300000,keys:body.keys};
   }
   const jwk=cached.keys.find(k=>k.kid===h.kid&&k.kty==='RSA');if(!jwk)return false;
