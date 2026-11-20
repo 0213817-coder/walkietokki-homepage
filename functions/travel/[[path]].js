@@ -6,7 +6,7 @@ const json=(body,status=200,extra={})=>new Response(JSON.stringify(body),{status
 export async function onRequest({request,env}){
  const config=configuration(env);
  if(!config)return new Response('비공개 여행 공간 설정 중입니다.',{status:503,headers});
- if(!await authorize(request,config))return new Response('본인 계정 로그인이 필요합니다.',{status:401,headers});
+ if(!await authorize(request,config))return json({error:'다시 로그인한 뒤 저장을 재시도하세요.',code:'AUTH'},401);
  const url=new URL(request.url);
  try{
   if(url.pathname==='/travel/api/state'){
@@ -20,7 +20,7 @@ export async function onRequest({request,env}){
     let state;try{state=JSON.parse(await readLimited(request));}catch(e){return json({error:'파일 크기 또는 형식을 확인하세요.'},e instanceof RangeError?413:400);}
     if(!validState(state))return json({error:'여행 백업 형식을 확인하세요.'},400);
     const result=await env.TRAVEL_STORE.put('travel/state.json',JSON.stringify(state),{onlyIf:etag==='"initial"'?{etagDoesNotMatch:'*'}:{etagMatches:etag.replaceAll('"','')},httpMetadata:{contentType:'application/json'}});
-    if(!result)return json({error:'다른 기기에서 변경했습니다. 백업 후 새로고침하세요.'},409);
+    if(!result)return json({error:'다른 기기에서 변경되었습니다. 최신 내용과 비교해 주세요.'},409);
     return json({ok:true},200,{ETag:result.httpEtag});
    }
    return json({error:'지원하지 않는 요청'},405,{Allow:'GET, PUT'});
@@ -29,4 +29,3 @@ export async function onRequest({request,env}){
   return new Response('Not found',{status:404,headers});
  }catch{return json({error:'저장 공간 연결을 확인해 주세요.'},503);}
 }
-
