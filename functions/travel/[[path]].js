@@ -25,7 +25,8 @@ export async function onRequest({request,env}){
    }
    return json({error:'지원하지 않는 요청'},405,{Allow:'GET, PUT'});
   }
-  if((url.pathname==='/travel'||url.pathname==='/travel/')&&request.method==='GET')return new Response(HTML,{headers:{...headers,'Content-Type':'text/html; charset=utf-8','Content-Security-Policy':"default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src 'self' data:; manifest-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'"}});
+  if((url.pathname==='/travel'||url.pathname==='/travel/')&&request.method==='GET')return new Response(HTML,{headers:{...headers,'Content-Type':'text/html; charset=utf-8','Content-Security-Policy':"default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src 'self' https: data:; manifest-src 'self'; frame-src https://www.google.com https://maps.google.com https://strava-embeds.com; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'"}});
   return new Response('Not found',{status:404,headers});
  }catch{return json({error:'저장 공간 연결을 확인해 주세요.'},503);}
 }
+
