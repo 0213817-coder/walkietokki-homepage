@@ -48,3 +48,13 @@ ChatGPT의 GitHub 연결은 코드 수정을 할 수 있지만, 이 외부 사�
 - https://developers.cloudflare.com/pages/functions/routing/
 - https://developers.cloudflare.com/pages/functions/bindings/
 - https://developers.cloudflare.com/cloudflare-one/access-controls/applications/http-apps/authorization-cookie/validating-json/
+
+### Active implementation and mobile editing
+
+The active travel app remains `/travel` in this repository. Other dashboard prototypes are design references; their data models and deployments are independent and must not be written into this app's R2 state wholesale.
+
+Edits now autosave after a short pause. The browser keeps a private pending draft until an authenticated, version-checked PUT succeeds. On a stale ETag, the client compares its baseline with the latest state, merges edits to different fields and asks the owner to resolve same-field conflicts. Login expiry, connection failures and size limits stay visible with a retry action. Server authentication and conditional writes remain required.
+
+Courses use compact category tables and full-page details. Unverified terrain stays in a collapsed classification queue; no distance-based assumption of flat terrain is made. Original ride dates remain in the historical record details. Mobile calendars show date and ride type; distance remains in the selected-day detail.
+
+Optional private hotel confirmations can be delivered to the owner in a URL fragment containing an AES-GCM payload and its key. Neither payload nor key belongs in source control or public assets. Fragments are not sent in HTTP requests. The client immediately clears the fragment, decrypts locally, verifies every booking reference and date against the owner's existing records, and saves only the confirmation through the protected API. Original booking records remain intact.
