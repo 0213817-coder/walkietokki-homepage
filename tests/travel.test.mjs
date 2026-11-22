@@ -50,7 +50,7 @@ test('API is private, preserves saved state and detects concurrent edits',async(
 test('validates backups and renders the monthly calendar without private seed',()=>{
  const f=fixture();assert.ok(validState(f));f.days[0].id='x" onclick="bad';assert.equal(validState(f),false);
  const script=HTML.match(/<script>([\s\S]*)<\/script>/)[1];new vm.Script(script);
- const elements=new Map();const c=vm.createContext({document:{querySelector:s=>{if(!elements.has(s))elements.set(s,{showModal(){},close(){},insertAdjacentHTML(){}});return elements.get(s)},querySelectorAll:()=>[]},location:{hash:''},history:{replaceState(){},pushState(){}},window:{addEventListener(){},scrollTo(){}},setTimeout:()=>0,fetch:async()=>({ok:true,json:async()=>({needsSetup:true}),headers:new Headers()}),console});
+ const elements=new Map();const c=vm.createContext({document:{addEventListener(){},querySelector:s=>{if(!elements.has(s))elements.set(s,{showModal(){},close(){},insertAdjacentHTML(){}});return elements.get(s)},querySelectorAll:()=>[]},location:{hash:''},history:{replaceState(){},pushState(){}},window:{addEventListener(){},scrollTo(){}},setTimeout:()=>0,fetch:async()=>({ok:true,json:async()=>({needsSetup:true}),headers:new Headers()}),console});
  vm.runInContext(script.replace(/\nload\(\);/,'\n'),c);c.fixture=fixture();vm.runInContext('data=fixture;',c);
  for(const page of ['home','flights','hotels','places','routes','days','packing','notes'])assert.ok(vm.runInContext('views.'+page+'()',c).length>100);
  const cal=vm.runInContext('calendar()',c);assert.match(cal,/2030년 01월/);assert.equal((cal.match(/data-date=/g)||[]).length,2);
@@ -83,7 +83,7 @@ test('route geometry and baggage schema reject invalid or excessively large reco
  s.routes=[];s.flights=[{id:'f1',baggagePieces:'2'}];assert.equal(validState(s),true);s.flights[0].baggagePieces='-1';assert.equal(validState(s),false);
 });
 test('new cards escape text, show actual metrics and construct bounded map URLs',()=>{
- const script=HTML.match(/<script>([\s\S]*)<\/script>/)[1];const elements=new Map();const c=vm.createContext({URL,document:{querySelector:s=>{if(!elements.has(s))elements.set(s,{showModal(){},close(){},insertAdjacentHTML(){}});return elements.get(s)},querySelectorAll:()=>[]},location:{hash:''},history:{replaceState(){},pushState(){}},window:{addEventListener(){},scrollTo(){}},setTimeout:()=>0,fetch:async()=>({ok:true,json:async()=>({needsSetup:true}),headers:new Headers()}),console});
+ const script=HTML.match(/<script>([\s\S]*)<\/script>/)[1];const elements=new Map();const c=vm.createContext({URL,document:{addEventListener(){},querySelector:s=>{if(!elements.has(s))elements.set(s,{showModal(){},close(){},insertAdjacentHTML(){}});return elements.get(s)},querySelectorAll:()=>[]},location:{hash:''},history:{replaceState(){},pushState(){}},window:{addEventListener(){},scrollTo(){}},setTimeout:()=>0,fetch:async()=>({ok:true,json:async()=>({needsSetup:true}),headers:new Headers()}),console});
  vm.runInContext(script.replace(/\nload\(\);/,'\n'),c);const f=fixture();f.flights=[{id:'f1',name:'KE683',seat:'31A',departure:'2030-01-01 18:45 · ICN',arrival:'2030-01-01 22:45 · CNX',baggagePieces:2}];f.places=[{id:'p1',name:'<script>alert(1)</script>',kind:'식당'}];f.routes=[{id:'r1',name:'Route',url:'https://www.strava.com/routes/123',distance:'90.8',elevation:'1200'}];c.fixture=f;vm.runInContext('data=fixture;',c);
  const flight=vm.runInContext('views.flights()',c);assert.match(flight,/31A/);assert.match(flight,/2개/);assert.match(flight,/18:45/);
  const place=vm.runInContext('placeResults()',c);assert.doesNotMatch(place,/<script>alert/);assert.match(place,/Google 지도/);assert.match(place,/사진 미등록/);
@@ -121,13 +121,16 @@ test('cleared optional baggage field does not reject the whole travel state',()=
  const s=fixture();s.flights=[{id:'f1',baggagePieces:''}];assert.equal(validState(s),true);s.flights[0].baggagePieces='-1';assert.equal(validState(s),false);
 });
 function syncHarness(server){
- const nodes=new Map(),storage=new Map(),events={};let version=1,stored=structuredClone(server),puts=0,mode='normal';
- const c=vm.createContext({URL,TextEncoder,Headers,Response,clearTimeout(){},setTimeout:()=>0,localStorage:{setItem:(k,v)=>storage.set(k,v),getItem:k=>storage.get(k)||null,removeItem:k=>storage.delete(k)},document:{querySelector:s=>{if(!nodes.has(s))nodes.set(s,{showModal(){},close(){},insertAdjacentHTML(){}});return nodes.get(s);},querySelectorAll:()=>[]},location:{hash:''},history:{replaceState(){},pushState(){}},window:{scrollTo(){},addEventListener:(k,fn)=>events[k]=fn},fetch:async(url,opts={})=>{
+ const nodes=new Map(),storage=new Map(),events={},timers=new Map(),requests=[];let version=1,stored=structuredClone(server),puts=0,mode='normal',timerId=0,release;
+ const c=vm.createContext({URL,TextEncoder,Headers,Response,AbortController,clearTimeout:id=>timers.delete(id),setTimeout:(fn,delay)=>{const id=++timerId;timers.set(id,{fn,delay});return id;},localStorage:{setItem:(k,v)=>storage.set(k,v),getItem:k=>storage.get(k)||null,removeItem:k=>storage.delete(k)},document:{addEventListener:(k,fn)=>events[k]=fn,visibilityState:'visible',querySelector:s=>{if(!nodes.has(s))nodes.set(s,{showModal(){},close(){},insertAdjacentHTML(){}});return nodes.get(s);},querySelectorAll:()=>[]},location:{hash:''},history:{replaceState(){},pushState(){}},window:{scrollTo(){},addEventListener:(k,fn)=>events[k]=fn},fetch:async(url,opts={})=>{
+ requests.push({url,opts});
+ if(mode==='hang')return new Promise((resolve,reject)=>opts.signal.addEventListener('abort',()=>reject(Error('Aborted'))));
+ if(mode==='delay'&&opts.method==='PUT')await new Promise(resolve=>{release=resolve;});
  if(opts.method==='PUT'){puts++;if(mode==='auth')return new Response('<html>login</html>',{headers:{'Content-Type':'text/html'}});if(mode==='network')throw Error('network');if(opts.headers['If-Match']!=='"'+version+'"')return new Response('{}',{status:409,headers:{'Content-Type':'application/json'}});stored=JSON.parse(opts.body);version++;return new Response('{"ok":true}',{headers:{'Content-Type':'application/json',ETag:'"'+version+'"'}});}
  return new Response(JSON.stringify(stored),{headers:{'Content-Type':'application/json',ETag:'"'+version+'"'}});
  }});
  vm.runInContext(HTML.match(/<script>([\s\S]*)<\/script>/)[1].replace(/\nload\(\);/,'\n'),c);
- return {c,nodes,storage,events,remoteEdit(fn){fn(stored);version++;},mode(v){mode=v;},get stored(){return stored;},get puts(){return puts;}};
+ return {c,nodes,storage,events,requests,runTimers(delay){for(const [id,t] of [...timers])if(t.delay===delay){timers.delete(id);t.fn();}},release(){release();},remoteEdit(fn){fn(stored);version++;},mode(v){mode=v;},get stored(){return stored;},get puts(){return puts;}};
 }
 test('client retries a stale version, merges disjoint changes and recovers after authentication expires',async()=>{
  const h=syncHarness(fixture());await vm.runInContext('load()',h.c);
@@ -155,4 +158,45 @@ test('encrypted updates require the correct key and authenticated ciphertext',as
 test('failed saves restore the private draft after reload',async()=>{
  const h=syncHarness(fixture());await vm.runInContext('load()',h.c);h.mode('network');vm.runInContext("data.notes='Offline retained';changed();",h.c);assert.equal(await vm.runInContext('save()',h.c),false);
  vm.runInContext('data=undefined;syncReady=false;dirty=false;',h.c);await vm.runInContext('load()',h.c);assert.equal(vm.runInContext('data.notes',h.c),'Offline retained');h.mode('normal');assert.equal(await vm.runInContext('save()',h.c),true);assert.equal(h.stored.notes,'Offline retained');
+});
+
+test('every state request asks Access for 401 without following a login redirect',async()=>{
+ const h=syncHarness(fixture());await vm.runInContext('load()',h.c);
+ vm.runInContext("data.notes='AJAX';changed();",h.c);await vm.runInContext('save()',h.c);
+ for(const {url,opts} of h.requests){assert.equal(url,'/travel/api/state');assert.equal(opts.headers['X-Requested-With'],'XMLHttpRequest');assert.equal(opts.redirect,'manual');assert.equal(opts.credentials,'same-origin');}
+ assert.equal(h.requests.at(-1).opts.headers['If-Match'],'"2"');
+ await assert.rejects(()=>stateResponse({type:'opaqueredirect',status:0,headers:new Headers()}),e=>e.code==='AUTH');
+});
+test('stalled mobile saves time out, retain the draft and can retry',async()=>{
+ const h=syncHarness(fixture());await vm.runInContext('load()',h.c);h.mode('hang');vm.runInContext("data.notes='Slow connection';changed();",h.c);
+ const pending=vm.runInContext('save()',h.c);assert.equal(h.nodes.get('#saveBtn').disabled,true);h.runTimers(15000);
+ assert.equal(await pending,false);assert.equal(h.nodes.get('#saveBtn').disabled,false);assert.match(h.nodes.get('#syncNotice').innerHTML,/연결이 지연/);assert.ok(h.storage.size);
+ h.mode('normal');assert.equal(await vm.runInContext('save()',h.c),true);assert.equal(h.stored.notes,'Slow connection');
+});
+test('login resumes in the same tab at the current course and stops repeated auth saves',async()=>{
+ const h=syncHarness(fixture());await vm.runInContext('load()',h.c);h.mode('auth');vm.runInContext("location.hash='#routes/ride_1';data.notes='Continue after login';changed();",h.c);
+ assert.equal(await vm.runInContext('save()',h.c),false);const notice=h.nodes.get('#syncNotice').innerHTML;
+ assert.match(notice,/href="\/travel#routes\/ride_1"/);assert.doesNotMatch(notice,/target="_blank"/);
+ const puts=h.puts;vm.runInContext("data.notes+='!';changed();",h.c);h.runTimers(1200);assert.equal(h.puts,puts);
+ h.mode('normal');await vm.runInContext('load()',h.c);assert.equal(h.stored.notes,'Continue after login!');assert.equal(h.storage.size,0);
+});
+test('app return retries pending edits and edits made during a save are not lost',async()=>{
+ const h=syncHarness(fixture());await vm.runInContext('load()',h.c);h.mode('network');vm.runInContext("data.notes='Pending';changed();",h.c);await vm.runInContext('save()',h.c);
+ h.mode('normal');await h.events.focus();assert.equal(h.stored.notes,'Pending');
+ h.mode('delay');vm.runInContext("data.notes='First';changed();",h.c);const pending=vm.runInContext('save()',h.c);
+ vm.runInContext("data.notes='Second';changed();",h.c);h.mode('normal');h.release();await pending;
+ assert.equal(h.stored.notes,'First');assert.equal(vm.runInContext('dirty',h.c),true);
+ h.runTimers(1200);await vm.runInContext('syncPromise',h.c);assert.equal(h.stored.notes,'Second');assert.equal(h.storage.size,0);
+});
+test('first-import draft is not silently discarded when another device has saved',async()=>{
+ const h=syncHarness(fixture()),draft=fixture();draft.notes='Import draft';h.storage.set('travel-private-draft-v1',JSON.stringify({data:draft,base:null,etag:'"initial"'}));
+ await vm.runInContext('load()',h.c);assert.equal(vm.runInContext('data.notes',h.c),'Import draft');assert.match(h.nodes.get('#syncNotice').innerHTML,/변경 내용 비교/);assert.equal(h.stored.notes,'');
+ await vm.runInContext("chooseSyncVersion('local')",h.c);assert.equal(h.stored.notes,'Import draft');
+});
+test('course list stays three columns and details expose saved metrics before embeds load',async()=>{
+ const state=fixture();state.routes=[{id:'ride_1',name:'싸몽 루프',category:'산악 중장거리',distance:'75',elevation:'1500',url:'https://www.strava.com/routes/123',note:'Detailed climb notes'}];
+ const h=syncHarness(state);await vm.runInContext('load()',h.c);const list=vm.runInContext('views.routes()',h.c);
+ assert.match(list,/리커버리/);assert.match(list,/평지 중장거리/);assert.match(list,/산악 중장거리/);assert.match(list,/싸몽 루프/);assert.match(list,/1,500/);assert.equal((list.match(/<th scope=/g)||[]).length,3);assert.doesNotMatch(list,/iframe|Detailed climb notes/);
+ vm.runInContext("showRoute('ride_1')",h.c);const detail=h.nodes.get('#content').innerHTML;
+ assert.match(detail,/75 km/);assert.match(detail,/1,500 m/);assert.match(detail,/Detailed climb notes/);assert.match(detail,/strava-embeds/);
 });

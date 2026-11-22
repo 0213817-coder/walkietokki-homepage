@@ -16,7 +16,21 @@ export function mergeTravelState(base,local,remote,preference){
 }
 export async function stateResponse(response){
  const status=response.status,contentType=response.headers.get('Content-Type')||'';
- if(response.redirected||status===401||(!contentType.includes('application/json')&&status<500)){const e=Error('로그인이 만료되었습니다. 다시 로그인한 뒤 저장을 재시도하세요.');e.code='AUTH';throw e;}
+ if(response.type==='opaqueredirect'||response.redirected||status===401||(!contentType.includes('application/json')&&status<500)){const e=Error('로그인이 만료되었습니다. 다시 로그인하면 보관한 변경 내용을 이어서 저장합니다.');e.code='AUTH';throw e;}
  let body;try{body=await response.json();}catch{const e=Error('서버 응답을 확인하지 못했습니다. 잠시 후 다시 시도하세요.');e.code='RESPONSE';e.status=status;throw e;}
  if(!response.ok){const e=Error(body.error||'저장하지 못했습니다.');e.status=status;e.code=body.code||'HTTP';throw e;}return body;
+}
+// Cloudflare Access returns 401 for AJAX instead of redirecting fetch to its login host.
+// Keep a timeout around the body too: slow mobile connections must release the save button.
+export async function requestTravelState(options={}){
+ const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),15000);
+ try{
+  const response=await fetch('/travel/api/state',{...options,cache:'no-store',credentials:'same-origin',redirect:'manual',signal:controller.signal,headers:{...options.headers,'X-Requested-With':'XMLHttpRequest'}});
+  const body=await stateResponse(response),etag=response.headers.get('ETag');
+  if(!etag)throw Error('저장 버전 정보를 받지 못했습니다. 다시 시도하면 최신 내용과 비교합니다.');
+  return {body,etag};
+ }catch(error){
+  if(controller.signal.aborted){const e=Error('연결이 지연되어 저장을 멈췄습니다. 변경 내용은 보관되며 다시 연결되면 재시도할 수 있습니다.');e.code='TIMEOUT';throw e;}
+  throw error;
+ }finally{clearTimeout(timer);}
 }

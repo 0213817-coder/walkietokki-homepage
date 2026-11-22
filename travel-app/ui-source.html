@@ -17,12 +17,10 @@ const safe=x=>/^https:\/\//i.test(x||'')?esc(x):'';
 const ext=(url,label)=>safe(url)?`<a href="${safe(url)}" target="_blank" rel="noopener noreferrer">${esc(label)} ↗</a>`:'';
 const map=n=>'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(n+' Chiang Mai Thailand');
 let data,etag,view=location.hash.slice(1)||'home',query='',filter='전체',selectedDate='',dirty=false,saving=false,blocked=false,editContext=null;
+let changed,load,save;
 const pages=[['home','⌂','홈'],['flights','✈','항공권'],['hotels','▤','숙소'],['places','♧','식당·장소'],['routes','↗','코스'],['days','▦','일정'],['packing','✓','준비물'],['notes','≡','메모']];
 function notify(t){$('#toast').textContent=t;$('#toast').hidden=false;setTimeout(()=>$('#toast').hidden=true,4200)}
-function changed(){dirty=true;$('#saveState').textContent='저장하지 않은 변경';$('#saveState').className='status accent'}
-async function load(){try{const r=await fetch('/travel/api/state',{cache:'no-store'});if(!r.ok)throw Error('여행 노트를 불러오지 못했습니다. 로그인과 연결을 확인해 주세요.');const incoming=await r.json();etag=r.headers.get('ETag');if(incoming.needsSetup){data=null;$('#saveState').textContent='첫 설정';$('#content').innerHTML='<div class="card"><h2>내 여행 데이터 불러오기</h2><p>상단 불러오기에서 개인 여행 JSON 파일을 선택하세요. 서버에 저장하면 다른 기기에서도 같은 일정이 열립니다.</p></div>';return;}data=incoming;const migrated=normalizeFlights(data);$('#saveState').textContent='동기화 완료';render();if(migrated){changed();await save()}}catch(e){$('#content').innerHTML=`<div class="card"><h2>연결을 확인해 주세요</h2><p>${esc(e.message)}</p><button onclick="location.reload()">다시 불러오기</button></div>`;$('#saveState').textContent='불러오기 실패'}}
-async function save(){if(!data||saving)return;if(blocked){notify('충돌한 내용은 백업 후 새로고침해 주세요.');return}if(!dirty){notify('저장 완료');return}saving=true;$('#saveBtn').disabled=true;$('#saveState').textContent='저장 중…';const snapshot=JSON.stringify(data);try{const r=await fetch('/travel/api/state',{method:'PUT',headers:{'Content-Type':'application/json','If-Match':etag},body:snapshot});if(!r.ok){if(r.status===409)blocked=true;throw Error((await r.json()).error||'저장 실패')}etag=r.headers.get('ETag');dirty=JSON.stringify(data)!==snapshot;$('#saveState').textContent=dirty?'저장하지 않은 변경':'동기화 완료';$('#saveState').className=dirty?'status accent':'status';notify('여행 노트를 저장했습니다.')}catch(e){$('#saveState').textContent='저장 실패 · 백업 가능';notify(e.message)}finally{saving=false;$('#saveBtn').disabled=false}}
-$('#saveBtn').onclick=save;window.addEventListener('beforeunload',e=>{if(dirty){e.preventDefault();e.returnValue=''}});
+window.addEventListener('beforeunload',e=>{if(dirty&&!draftAvailable){e.preventDefault();e.returnValue=''}});
 $('#exportBtn').onclick=()=>{if(!data)return;const a=document.createElement('a');const u=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));a.href=u;a.download='travel-backup.json';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)};
 function go(v){view=pages.some(p=>p[0]===v)?v:'home';query='';filter='전체';history.replaceState(null,'','#'+view);render();window.scrollTo({top:0})}
 function render(){if(!data)return;$('#nav').innerHTML=pages.map(([v,i,n])=>`<button data-go="${v}" class="${view===v?'active':''}" ${view===v?'aria-current="page"':''}><span>${i}</span>${n}</button>`).join('');$('#content').innerHTML=views[view]?views[view]():views.home();bind()}
@@ -90,7 +88,7 @@ function validState(x){
 }
 
 $('#importBtn').onclick=()=>$('#importFile').click();
-$('#importFile').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{if(f.size>1000000)throw Error('백업 파일이 너무 큽니다.');const incoming=JSON.parse(await f.text());if(!validState(incoming))throw Error('여행 백업 형식이 아닙니다.');if(data&&!confirm('현재 내용을 바꿉니다. 필요한 변경 내용을 먼저 백업했나요?'))return;data=incoming;normalizeFlights(data);normalizeCourses(data);changed();render();notify('불러왔습니다. 상단 저장을 눌러 서버에 반영하세요.');}catch(err){notify(err.message)}finally{e.target.value=''}};
+$('#importFile').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{if(f.size>1000000)throw Error('백업 파일이 너무 큽니다.');const incoming=JSON.parse(await f.text());if(!validState(incoming))throw Error('여행 백업 형식이 아닙니다.');if(data&&!confirm('현재 내용을 바꿉니다. 필요한 변경 내용을 먼저 백업했나요?'))return;data=incoming;normalizeFlights(data);normalizeCourses(data);changed();render();notify('불러왔습니다. 자동 저장 후 동기화 완료를 확인하세요.');}catch(err){notify(err.message)}finally{e.target.value=''}};
 
 /* ROUTE_UTILS */
 /* PRIVATE_UPDATE */

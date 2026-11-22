@@ -58,3 +58,22 @@ Edits now autosave after a short pause. The browser keeps a private pending draf
 Courses use compact category tables and full-page details. Unverified terrain stays in a collapsed classification queue; no distance-based assumption of flat terrain is made. Original ride dates remain in the historical record details. Mobile calendars show date and ride type; distance remains in the selected-day detail.
 
 Optional private hotel confirmations can be delivered to the owner in a URL fragment containing an AES-GCM payload and its key. Neither payload nor key belongs in source control or public assets. Fragments are not sent in HTTP requests. The client immediately clears the fragment, decrypts locally, verifies every booking reference and date against the owner's existing records, and saves only the confirmation through the protected API. Original booking records remain intact.
+
+### 휴대폰 재로그인 간격
+
+앱 코드 배포는 Cloudflare Access의 로그인 유지 시간을 변경하지 않습니다. 현재 계정 설정은 이 변경으로 확인하거나 수정하지 않았습니다. 자주 재로그인해야 한다면 Cloudflare에서 다음을 확인합니다.
+
+1. Zero Trust → Access controls → Applications → `/travel`을 보호하는 앱 → Edit → Session Duration을 `1 month`로 설정합니다.
+2. 본인 이메일을 허용하는 정책의 Session Duration은 `Same as application` 또는 `1 month`로 맞춥니다. 정책에 더 짧은 시간이 설정되어 있으면 그것이 우선합니다.
+3. Access controls → Access settings → Global session duration도 확인합니다. 계정 전체에 적용되는 설정이므로 다른 앱에 필요한 정책을 확인한 뒤 변경합니다. 기본값은 24시간이며 최대 한 달입니다.
+4. 홈 화면에 추가한 아이콘 또는 같은 브라우저의 즐겨찾기 하나로 접속합니다. 브라우저/홈 화면 앱이 서로 다른 쿠키 저장 공간을 쓰거나 쿠키를 지우면 새 로그인이 필요할 수 있습니다.
+
+Cloudflare One Client나 MFA 정책이 따로 있다면 해당 세션이 우선하거나 추가 인증을 요구할 수 있습니다. 로그인 보호를 해제하거나 토큰 유효기간 검증을 우회하지 않습니다.
+
+API 요청에는 `X-Requested-With: XMLHttpRequest`를 보내 만료된 세션을 401로 구분하고, 리다이렉트를 자동으로 따라가지 않습니다. 15초 동안 응답이 끝나지 않으면 저장 버튼을 다시 사용할 수 있게 합니다. 재로그인은 새 탭 대신 현재 화면에서 진행하고, 인증 후 기기에 보관된 수정 내용을 서버 최신본과 비교해 다시 저장합니다. 앱으로 돌아오거나 연결이 복구되면 미완료 저장을 재시도합니다. 이 기능은 오프라인에서 새로 여는 기능이나 로그인 유지 기간 변경이 아닙니다.
+
+공식 문서: https://developers.cloudflare.com/cloudflare-one/access-controls/access-settings/session-management/
+
+### 이번 변경 검증
+
+`node scripts/build-travel.mjs` 후 `node --test tests/travel.test.mjs`를 실행합니다. 25개 테스트에 로그인 응답, 요청 시간 초과, 앱 복귀, 저장 도중 추가 입력, 최초 가져오기 충돌과 코스 목록/상세 구분이 포함됩니다. 실제 사용자 R2 데이터 저장과 iPhone 화면은 로그인된 기기에서 별도 확인이 필요합니다.
