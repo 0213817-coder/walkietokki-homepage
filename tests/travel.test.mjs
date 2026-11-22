@@ -86,7 +86,7 @@ test('new cards escape text, show actual metrics and construct bounded map URLs'
  const script=HTML.match(/<script>([\s\S]*)<\/script>/)[1];const elements=new Map();const c=vm.createContext({URL,document:{addEventListener(){},querySelector:s=>{if(!elements.has(s))elements.set(s,{showModal(){},close(){},insertAdjacentHTML(){}});return elements.get(s)},querySelectorAll:()=>[]},location:{hash:''},history:{replaceState(){},pushState(){}},window:{addEventListener(){},scrollTo(){}},setTimeout:()=>0,fetch:async()=>({ok:true,json:async()=>({needsSetup:true}),headers:new Headers()}),console});
  vm.runInContext(script.replace(/\nload\(\);/,'\n'),c);const f=fixture();f.flights=[{id:'f1',name:'KE683',seat:'31A',departure:'2030-01-01 18:45 · ICN',arrival:'2030-01-01 22:45 · CNX',baggagePieces:2}];f.places=[{id:'p1',name:'<script>alert(1)</script>',kind:'식당'}];f.routes=[{id:'r1',name:'Route',url:'https://www.strava.com/routes/123',distance:'90.8',elevation:'1200'}];c.fixture=f;vm.runInContext('data=fixture;',c);
  const flight=vm.runInContext('views.flights()',c);assert.match(flight,/31A/);assert.match(flight,/2개/);assert.match(flight,/18:45/);
- const place=vm.runInContext('placeResults()',c);assert.doesNotMatch(place,/<script>alert/);assert.match(place,/Google 지도/);assert.match(place,/사진 미등록/);
+ const place=vm.runInContext('placeResults()',c);assert.doesNotMatch(place,/<script>alert/);assert.match(place,/Google 지도/);assert.doesNotMatch(place,/사진 미등록/);assert.match(place,/place-symbol/);
  assert.match(vm.runInContext('routeResults()',c),/90.8/);assert.match(vm.runInContext('routeResults()',c),/1,200/);
  vm.runInContext("showRoute('r1')",c);assert.match(elements.get('#content').innerHTML,/strava-embeds.com\/route\/123/);assert.doesNotMatch(elements.get('#content').innerHTML,/미등록|2025 계획/);
 });
@@ -196,7 +196,7 @@ test('first-import draft is not silently discarded when another device has saved
 test('course list stays three columns and details expose saved metrics before embeds load',async()=>{
  const state=fixture();state.routes=[{id:'ride_1',name:'싸몽 루프',category:'산악 중장거리',distance:'75',elevation:'1500',url:'https://www.strava.com/routes/123',note:'Detailed climb notes'}];
  const h=syncHarness(state);await vm.runInContext('load()',h.c);const list=vm.runInContext('views.routes()',h.c);
- assert.match(list,/리커버리/);assert.match(list,/평지 중장거리/);assert.match(list,/산악 중장거리/);assert.match(list,/싸몽 루프/);assert.match(list,/1,500/);assert.equal((list.match(/<th scope=/g)||[]).length,3);assert.doesNotMatch(list,/iframe|Detailed climb notes/);
+ assert.match(list,/리커버리/);assert.match(list,/평지 중장거리/);assert.match(list,/산악 중장거리/);assert.match(list,/싸몽 루프/);assert.match(list,/1,500/);for(const table of list.match(/<table[\s\S]*?<\/table>/g)||[])assert.equal((table.match(/<th scope=/g)||[]).length,3);assert.doesNotMatch(list,/iframe|Detailed climb notes/);
  vm.runInContext("showRoute('ride_1')",h.c);const detail=h.nodes.get('#content').innerHTML;
  assert.match(detail,/75 km/);assert.match(detail,/1,500 m/);assert.match(detail,/Detailed climb notes/);assert.match(detail,/strava-embeds/);
 });
@@ -275,6 +275,49 @@ test('historical rides appear once in main category tables and remain searchable
  assert.match(vm.runInContext("filter='전체';query='Chaeson';routeResults()",h.c),/old_hill/);
  const detail=vm.runInContext("coursePage('old_hill')",h.c);assert.match(detail,/주행 기록/);assert.match(detail,/2030-01-01/);assert.match(detail,/Original ride note/);
  assert.match(vm.runInContext("coursePage('old_unknown')",h.c),/지형이 확인된 것은 아니며/);
- assert.equal(await vm.runInContext('save()',h.c),true);assert.equal(h.stored.courseRevision,'compact-v2');assert.equal(h.stored.routes.length,5);
+ assert.equal(await vm.runInContext('save()',h.c),true);assert.equal(h.stored.courseRevision,'compact-v2');assert.equal(h.stored.routes.length,7);
  assert.equal(h.stored.routes[0].category,'산악 중장거리');assert.equal(h.stored.routes[0].type,'실제 주행');
+});
+
+
+import {addRecoveryCourses,courseDisplayMetric} from '../travel-app/course-utils.mjs';
+import {discoveries,discoveryAvailability,discoveryRecommendations,discoveryIsKnown} from '../travel-app/discovery-data.mjs';
+test('recovery guide choices fill the category without changing past mountain or group effort records',()=>{
+ const state=fixture();state.routes=[{id:'short_climb',name:'Doi Suthep',distance:'27',category:'산악 중장거리',type:'실제 주행'},{id:'fast_group',name:'55 Cycling',distance:'45',category:'평지 중장거리',type:'실제 주행'}];
+ const before=structuredClone(state.routes);assert.equal(addRecoveryCourses(state),true);assert.deepEqual(state.routes.slice(0,2),before);
+ assert.equal(state.routes.filter(x=>courseCategory(x)==='리커버리').length,2);assert.equal(courseDisplayMetric(state.routes[2],'elevation'),'<100');assert.equal(courseDisplayMetric(state.routes[3],'distance'),'55–75');
+ state.routes[2].note='My note';assert.equal(addRecoveryCourses(state),false);assert.equal(state.routes[2].note,'My note');assert.equal(state.routes.length,4);
+});
+test('discovery recommendations honor weekday and holiday closures and hide known places',()=>{
+ const state=fixture(),wednesday={date:'2030-01-02',rideKind:'회복'},tuesday={date:'2030-01-01',rideKind:'휴식'};
+ assert.equal(discoveryAvailability(discoveries.find(x=>x.id==='jingjai-wednesday'),wednesday.date,{date:wednesday.date,hour:12}),'오늘 운영 종료');
+ const wed=discoveryRecommendations(state,wednesday).map(x=>x.id);assert.ok(wed.includes('jingjai-wednesday'));assert.ok(!wed.includes('kalm-makers'));
+ const tue=discoveryRecommendations(state,tuesday).map(x=>x.id);assert.ok(!tue.includes('maiiam-art'));assert.ok(!tue.includes('broken-stories'));assert.ok(!tue.includes('jingjai-wednesday'));
+ state.discoveryLog={'jingjai-wednesday':{known:true},'akha-coffee':{saved:true}};assert.ok(!discoveryRecommendations(state,wednesday).some(x=>x.id==='jingjai-wednesday'));
+ assert.equal(discoveryRecommendations(state,wednesday)[0].id,'akha-coffee');
+ const coffee=discoveries.find(x=>x.id==='akha-coffee');state.places.push({id:'existing',name:coffee.place,visited:true});assert.equal(discoveryIsKnown(state,coffee),true);
+ assert.ok(discoveryRecommendations(state,{date:'2030-01-04',rideKind:'라이딩',intensity:'최고강도'}).every(x=>x.effort==='easy'));
+});
+test('adding a discovery checks opening days, avoids duplicates and preserves existing day notes',async()=>{
+ const state=fixture();state.days[0].afternoon='Original plan';const h=syncHarness(state);await vm.runInContext('load()',h.c);
+ vm.runInContext("openPlanPicker('experience','broken-stories')",h.c);h.c.document.querySelector('#planDate').value=state.days[0].id;assert.equal(vm.runInContext('confirmPlan()',h.c),false);
+ h.c.document.querySelector('#planDate').value=state.days[1].id;assert.equal(vm.runInContext('confirmPlan()',h.c),true);
+ vm.runInContext("openPlanPicker('experience','broken-stories')",h.c);h.c.document.querySelector('#planDate').value=state.days[1].id;vm.runInContext('confirmPlan()',h.c);
+ assert.equal(vm.runInContext('data.days[1].experienceIds.length',h.c),1);assert.equal(vm.runInContext('data.days[0].afternoon',h.c),'Original plan');
+ vm.runInContext("updateDiscovery('broken-stories','saved')",h.c);assert.equal(await vm.runInContext('save()',h.c),true);assert.equal(h.stored.discoveryLog['broken-stories'].saved,true);
+ const next=syncHarness(h.stored);await vm.runInContext('load()',next.c);assert.match(vm.runInContext("selectedDate='2030-01-02';views.days()",next.c),/남의 추억을 읽는 저녁/);
+ assert.equal(vm.runInContext('data.days[1].experienceIds.length',next.c),1);
+});
+test('historical courses can be linked to a day without replacing original text or ride type',async()=>{
+ const state=fixture();state.routes=[{id:'past',name:'Old ride',type:'실제 주행',distance:'80'}];const h=syncHarness(state);await vm.runInContext('load()',h.c);
+ vm.runInContext("openPlanPicker('route','past')",h.c);h.c.document.querySelector('#planDate').value=state.days[0].id;assert.equal(vm.runInContext('confirmPlan()',h.c),true);
+ assert.equal(vm.runInContext('data.days[0].routeId',h.c),'past');assert.equal(vm.runInContext('data.days[0].morning',h.c),'Ride');assert.equal(vm.runInContext('data.routes[0].type',h.c),'실제 주행');
+ assert.match(vm.runInContext('views.days()',h.c),/Old ride/);
+});
+test('journey home focuses on a day and keeps booking cards out of the first screen',async()=>{
+ const h=syncHarness(fixture());await vm.runInContext('load()',h.c);const home=vm.runInContext('views.home()',h.c);
+ assert.match(home,/나의 속도로/);assert.match(home,/하루 계획 보기/);assert.match(home,/이번엔, 다른 치앙마이/);assert.doesNotMatch(home,/flight-card|calendar-months/);
+ assert.match(vm.runInContext('views.discover()',h.c),/data-plan-experience/);assert.match(vm.runInContext("location.hash='#discover';loginHref()",h.c),/#discover/);
+ const malformed=fixture();malformed.discoveryLog={test:{saved:'yes'}};assert.equal(validState(malformed),false);malformed.discoveryLog={test:{saved:true}};assert.equal(validState(malformed),true);
+ malformed.days[0].experienceIds=['new-tram','new-tram'];assert.equal(validState(malformed),false);
 });

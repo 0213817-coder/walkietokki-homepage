@@ -1,7 +1,7 @@
 // Private drafts stay in this browser; the R2 state remains authoritative after a successful PUT.
 let syncBase=null,syncReady=false,syncTimer=null,syncConflict=null,syncPromise=null,draftAvailable=true,syncAuthNeeded=false,syncLoadPromise=null;
 const draftKey='travel-private-draft-v1';
-function loginHref(){const hash=location.hash||'';return '/travel'+(/^#(?:home|days|routes(?:\/[A-Za-z0-9_-]+)?|places|flights|hotels|packing|notes)$/.test(hash)?hash:'');}
+function loginHref(){const hash=location.hash||'';return '/travel'+(/^#(?:home|days|routes(?:\/[A-Za-z0-9_-]+)?|places|flights|hotels|packing|notes|discover)$/.test(hash)?hash:'');}
 function rememberDraft(){if(!data)return;try{localStorage.setItem(draftKey,JSON.stringify({data,base:syncBase,etag,at:Date.now()}));draftAvailable=true;}catch{draftAvailable=false;}}
 function clearDraft(){try{localStorage.removeItem(draftKey);}catch{}}
 function syncNotice(message,kind='retry'){
@@ -33,7 +33,7 @@ async function loadTravel(){
   }
   syncReady=true;
   if(!data){$('#saveState').textContent='첫 설정';$('#content').innerHTML='<div class="card"><h2>여행 데이터</h2><p>더보기의 데이터 가져오기에서 기존 여행 백업을 선택하세요.</p></div>';return;}
-  let stayChanged=false;if(pendingStayUpdate){try{stayChanged=await receiveStayUpdate();}catch(e){notify(e.message);}}let migrated=normalizeFlights(data)||stayChanged;migrated=normalizeCourses(data)||migrated;dirty=dirty||migrated;
+  let stayChanged=false;if(pendingStayUpdate){try{stayChanged=await receiveStayUpdate();}catch(e){notify(e.message);}}let migrated=normalizeFlights(data)||stayChanged;migrated=normalizeCourses(data)||migrated;migrated=addRecoveryCourses(data)||migrated;dirty=dirty||migrated;
   $('#saveState').textContent=dirty?'저장 대기':'동기화 완료';render();
   if(syncConflict){rememberDraft();syncNotice('같은 항목이 다른 기기에서도 수정되었습니다. 비교 후 사용할 내용을 선택하세요.','conflict');}
   else if(dirty){rememberDraft();await save();}

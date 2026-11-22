@@ -1,25 +1,9 @@
 {
-  "id": "/travel",
-  "name": "치앙마이 여행 노트",
-  "short_name": "치앙마이",
-  "lang": "ko",
-  "start_url": "/travel",
-  "scope": "/travel",
-  "display": "standalone",
-  "background_color": "#f5f4ee",
-  "theme_color": "#193e35",
+  "id": "/travel", "name": "치앙마이, 나의 속도로", "short_name": "나의 속도로", "lang": "ko",
+  "start_url": "/travel", "scope": "/travel", "display": "standalone",
+  "background_color": "#fafbff", "theme_color": "#fafbff",
   "icons": [
-    {
-      "src": "/travel-assets/icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "/travel-assets/icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any"
-    }
+    {"src":"/travel-assets/icon-192.png","sizes":"192x192","type":"image/png","purpose":"any"},
+    {"src":"/travel-assets/icon-512.png","sizes":"512x512","type":"image/png","purpose":"any"}
   ]
 }

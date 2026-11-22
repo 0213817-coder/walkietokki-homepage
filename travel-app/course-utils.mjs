@@ -32,3 +32,15 @@ export function normalizeCourses(state){
  }
  state.courseRevision='compact-v2';return true;
 }
+
+// Guide distances describe the linked route, not an exact ride from the user's hotel.
+export const recoveryCourses=[
+ {id:'guide_recovery_lake',name:'후아이퉁타오 호수 왕복',type:'추천 후보',category:'리커버리',distance:'34',elevation:'',elevationLabel:'<100',url:'https://gobackpackgo.com/huay-tung-tao-cycling/',metricSource:'공개 가이드의 수텝 로드 출발 경로 기준',note:'가볍게 호수 한 바퀴를 돌고 돌아오는 평지 코스. 참고 경로는 34km, 획득고도 100m 미만이며 숙소 출발점에 따라 달라집니다. 기록 경쟁 없이 혼자 편하게 타는 날에 선택하세요. 원문에서 GPX를 받을 수 있습니다.',guideRoute:true},
+ {id:'guide_recovery_river',name:'핑강 북쪽 루프',type:'추천 후보',category:'리커버리',distance:'',distanceLabel:'55–75',elevation:'55',url:'https://chiangmaicyclist.wordpress.com/2023/11/06/ride-of-the-week-northern-river-loop/',metricSource:'공개 가이드 제시 범위 · 우회·출발점에 따라 변동',note:'핑강과 작은 수로를 따라 마을·논 사이를 도는 평지 소셜 코스. 55–75km, 획득고도 약 55m는 원문 가이드 기준입니다. 짧게 돌아오는 갈림길을 선택할 수 있습니다. 요철·부분 비포장 구간은 원문과 GPX에서 확인하세요. Jeff’s Northern Loop 기록과 동일한 경로라고 단정하지 않습니다.',guideRoute:true}
+];
+export function addRecoveryCourses(state){
+ if(state.recoveryGuideRevision==='v1')return false;
+ for(const route of recoveryCourses)if(!state.routes.some(r=>r.id===route.id||r.url===route.url))state.routes.push({...route});
+ state.recoveryGuideRevision='v1';return true;
+}
+export function courseDisplayMetric(r,key){return courseMetric(r[key])!==null?courseMetric(r[key]).toLocaleString('en-US',{maximumFractionDigits:1}):String(r[key+'Label']||'—');}
