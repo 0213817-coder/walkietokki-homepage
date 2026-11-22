@@ -92,7 +92,7 @@ test('new cards escape text, show actual metrics and construct bounded map URLs'
 });
 
 import {mergeTravelState,stateResponse} from '../travel-app/sync-utils.mjs';
-import {normalizeCourses,courseCategory} from '../travel-app/course-utils.mjs';
+import {normalizeCourses,courseCategory,courseCategoryNote} from '../travel-app/course-utils.mjs';
 test('course migration fills verified metrics without overwriting edits or inventing flat terrain',()=>{
  const state={routes:[{id:'a',name:'Samoeng Mini XL',url:'https://www.strava.com/routes/7630897',year:'2025 계획',distance:'',elevation:''},{id:'b',name:'Fast ride',distance:'100',elevation:''}]};
  assert.equal(normalizeCourses(state),true);assert.equal(state.routes[0].distance,'86.7');assert.equal(state.routes[0].elevation,'1782');assert.equal(state.routes[0].year,'');assert.equal(state.routes[0].category,'산악 중장거리');assert.equal(courseCategory(state.routes[1]),'분류 대기');
@@ -232,4 +232,49 @@ test('an unchanged server revision rejection does not loop or blame another devi
  vm.runInContext("data.notes='Retain failed save';changed();",h.c);assert.equal(await vm.runInContext('save()',h.c),false);
  assert.equal(h.puts,before+1);assert.ok(h.storage.size);assert.doesNotMatch(h.nodes.get('#syncNotice').innerHTML,/다른 기기/);
  h.mode('normal');assert.equal(await vm.runInContext('save()',h.c),true);assert.equal(h.stored.notes,'Retain failed save');
+});
+
+
+test('existing historical rides migrate into categories without changing original records or manual choices',()=>{
+ const state={courseRevision:'compact-v1',routes:[
+  {id:'mountain',type:'실제 주행',name:'55 + Samoeng',category:'분류 대기',distance:'113',elevation:'',year:'2030-01-01',note:'Original note'},
+  {id:'short',type:'실제 주행',name:'Doi Suthep',category:'분류 대기',distance:'27'},
+  {id:'recovery',type:'실제 주행',name:'Recovery ride',category:'분류 대기'},
+  {id:'flat',type:'실제 주행',name:'55club ride',category:'분류 대기'},
+  {id:'uncertain',type:'실제 주행',name:'Morning adventure',category:'분류 대기',distance:'45'},
+  {id:'manual',type:'실제 주행',name:'Samoeng',category:'리커버리'},
+  {id:'planned',type:'계획',name:'Unknown planned route',category:'분류 대기'},
+  {id:'cleared',type:'계획',name:'Samoeng',url:'https://www.strava.com/routes/7630897',distance:'',elevation:'',category:'산악 중장거리'}
+ ]};
+ const before=structuredClone(state.routes);
+ assert.equal(normalizeCourses(state),true);
+ assert.deepEqual(state.routes.map(courseCategory),['산악 중장거리','산악 중장거리','리커버리','평지 중장거리','평지 중장거리','리커버리','분류 대기','산악 중장거리']);
+ for(let i=0;i<before.length;i++){const {category,categorySuggestion,...original}=before[i];const {category:c,categorySuggestion:s,...after}=state.routes[i];assert.deepEqual(after,original);}
+ assert.match(courseCategoryNote(state.routes[4]),/지형이 확인된 것은 아니며/);
+ state.routes[4].category='산악 중장거리';assert.equal(courseCategoryNote(state.routes[4]),'');
+ assert.equal(normalizeCourses(state),false);assert.equal(state.routes[4].category,'산악 중장거리');
+});
+
+test('historical rides appear once in main category tables and remain searchable with original details',async()=>{
+ const state=fixture();state.courseRevision='compact-v1';state.routes=[
+  {id:'old_hill',name:'Chaeson National Park',type:'실제 주행',category:'분류 대기',distance:'160',year:'2030-01-01',note:'Original ride note'},
+  {id:'old_flat',name:'55 Cycling',type:'실제 주행',category:'분류 대기',distance:'45'},
+  {id:'old_easy',name:'Easy Ride',type:'실제 주행',category:'분류 대기'},
+  {id:'old_unknown',name:'Morning adventure',type:'실제 주행',category:'분류 대기'},
+  {id:'planned',name:'Samoeng Loop',type:'계획',category:'산악 중장거리'}
+ ];
+ const h=syncHarness(state);await vm.runInContext('load()',h.c);
+ const list=vm.runInContext('routeResults()',h.c);
+ for(const r of state.routes)assert.equal((list.match(new RegExp('data-course-row="'+r.id+'"','g'))||[]).length,1);
+ assert.doesNotMatch(list,/<summary>주행 기록|<summary>분류 대기/);assert.match(list,/임시 분류/);
+ for(const [category,id] of [['리커버리','old_easy'],['평지 중장거리','old_flat'],['산악 중장거리','old_hill']]){
+  h.c.selectedCategory=category;const result=vm.runInContext('filter=selectedCategory;routeResults()',h.c);
+  assert.match(result,new RegExp('data-course-row="'+id+'"'));assert.equal((result.match(/<section /g)||[]).length,1);
+ }
+ assert.doesNotMatch(vm.runInContext("filter='평지 중장거리';routeResults()",h.c),/old_hill/);
+ assert.match(vm.runInContext("filter='전체';query='Chaeson';routeResults()",h.c),/old_hill/);
+ const detail=vm.runInContext("coursePage('old_hill')",h.c);assert.match(detail,/주행 기록/);assert.match(detail,/2030-01-01/);assert.match(detail,/Original ride note/);
+ assert.match(vm.runInContext("coursePage('old_unknown')",h.c),/지형이 확인된 것은 아니며/);
+ assert.equal(await vm.runInContext('save()',h.c),true);assert.equal(h.stored.courseRevision,'compact-v2');assert.equal(h.stored.routes.length,5);
+ assert.equal(h.stored.routes[0].category,'산악 중장거리');assert.equal(h.stored.routes[0].type,'실제 주행');
 });

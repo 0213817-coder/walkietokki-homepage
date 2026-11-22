@@ -2,16 +2,33 @@ export const courseCategories=['리커버리','평지 중장거리','산악 중�
 export function courseMetric(v){if(v==null||String(v).trim()==='')return null;const n=Number(String(v).replace(/,/g,''));return Number.isFinite(n)&&n>=0?n:null;}
 export function courseCategory(r){
  if([...courseCategories,'분류 대기'].includes(r.category))return r.category;
- if(/easy ride|recovery|리커버리|회복/i.test(r.name||''))return '리커버리';
- if(/samoeng|mini xl|싸몽|쌈몽|도이수텝|도이뿌이|doi suthep|doi pui/i.test(r.name||''))return '산악 중장거리';
- return '분류 대기';
+ return suggestCourseCategory(r).category;
+}
+function suggestCourseCategory(r){
+ const name=String(r.name||'');
+ if(/samoeng|mini\s*xl|싸몽|쌈몽|도이\s*수텝|도이\s*뿌이|doi\s*suthep|doi\s*pui|chae?\s*son/i.test(name))return {category:'산악 중장거리'};
+ if(/easy ride|recovery|리커버리|회복/i.test(name))return {category:'리커버리'};
+ if(r.type==='실제 주행'){
+  if(/rose\s*garden/i.test(name))return {category:'산악 중장거리',reason:'코스명에 나온 로즈가든의 산악 접근로를 기준으로 임시 분류했습니다. 실제 주행 경로·고도는 확인이 필요합니다.'};
+  if(/\b55\s*(?:cycling|club)\b|khun\s*bee/i.test(name))return {category:'평지 중장거리',reason:'같은 이름의 일반적인 평지·완만한 구릉 코스를 기준으로 임시 분류했습니다. 실제 주행 경로·고도는 확인이 필요합니다.'};
+  return {category:'평지 중장거리',reason:'주행 기록을 목록에서 바로 찾을 수 있도록 평지에 임시 배치했습니다. 지형이 확인된 것은 아니며, 실제 경로·고도 확인 후 카테고리를 바꿀 수 있습니다.'};
+ }
+ return {category:'분류 대기'};
+}
+export function courseCategoryNote(r){
+ if(r.categorySuggestion&&r.categorySuggestion.category===r.category)return r.categorySuggestion.reason||'';
+ return r.category?'':suggestCourseCategory(r).reason||'';
 }
 export function normalizeCourses(state){
- if(state.courseRevision==='compact-v1')return false;
+ if(state.courseRevision==='compact-v2')return false;
+ const firstMigration=state.courseRevision!=='compact-v1';
  for(const r of state.routes){
-  if(/^https:\/\/(?:www\.)?strava\.com\/routes\/7630897\/?(?:[?#].*)?$/.test(r.url||'')){if(courseMetric(r.distance)===null)r.distance='86.7';if(courseMetric(r.elevation)===null)r.elevation='1782';}
-  if(!r.category)r.category=courseCategory(r);
-  if(/^\d{4} 계획$/.test(r.year||'')){r.sourceLabel=r.sourceLabel||r.year;r.year='';}
+  if(firstMigration&&/^https:\/\/(?:www\.)?strava\.com\/routes\/7630897\/?(?:[?#].*)?$/.test(r.url||'')){if(courseMetric(r.distance)===null)r.distance='86.7';if(courseMetric(r.elevation)===null)r.elevation='1782';}
+  if(!r.category||(r.type==='실제 주행'&&r.category==='분류 대기')){
+   const suggestion=suggestCourseCategory(r);r.category=suggestion.category;
+   if(suggestion.reason)r.categorySuggestion=suggestion;else delete r.categorySuggestion;
+  }
+  if(firstMigration&&/^\d{4} 계획$/.test(r.year||'')){r.sourceLabel=r.sourceLabel||r.year;r.year='';}
  }
- state.courseRevision='compact-v1';return true;
+ state.courseRevision='compact-v2';return true;
 }
