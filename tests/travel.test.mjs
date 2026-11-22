@@ -126,8 +126,8 @@ function syncHarness(server){
  requests.push({url,opts});
  if(mode==='hang')return new Promise((resolve,reject)=>opts.signal.addEventListener('abort',()=>reject(Error('Aborted'))));
  if(mode==='delay'&&opts.method==='PUT')await new Promise(resolve=>{release=resolve;});
- if(opts.method==='PUT'){puts++;if(mode==='auth')return new Response('<html>login</html>',{headers:{'Content-Type':'text/html'}});if(mode==='network')throw Error('network');if(opts.headers['If-Match']!=='"'+version+'"')return new Response('{}',{status:409,headers:{'Content-Type':'application/json'}});stored=JSON.parse(opts.body);version++;return new Response('{"ok":true}',{headers:{'Content-Type':'application/json',ETag:'"'+version+'"'}});}
- return new Response(JSON.stringify(stored),{headers:{'Content-Type':'application/json',ETag:'"'+version+'"'}});
+ if(opts.method==='PUT'){puts++;if(mode==='auth')return new Response('<html>login</html>',{headers:{'Content-Type':'text/html'}});if(mode==='network')throw Error('network');if(mode==='reject')return new Response('{}',{status:409,headers:{'Content-Type':'application/json'}});if(opts.headers['If-Match']!=='"'+version+'"')return new Response('{}',{status:409,headers:{'Content-Type':'application/json'}});stored=JSON.parse(opts.body);version++;return new Response('{"ok":true}',{headers:{'Content-Type':'application/json',ETag:(mode==='cdn'?'W/':'')+'"'+version+'"',...(mode==='cdn'?{'X-Travel-Version':'"'+version+'"'}:{})}});}
+ return new Response(JSON.stringify(stored),{headers:{'Content-Type':'application/json',ETag:(mode==='cdn'?'W/':'')+'"'+version+'"',...(mode==='cdn'?{'X-Travel-Version':'"'+version+'"'}:{})}});
  }});
  vm.runInContext(HTML.match(/<script>([\s\S]*)<\/script>/)[1].replace(/\nload\(\);/,'\n'),c);
  return {c,nodes,storage,events,requests,runTimers(delay){for(const [id,t] of [...timers])if(t.delay===delay){timers.delete(id);t.fn();}},release(){release();},remoteEdit(fn){fn(stored);version++;},mode(v){mode=v;},get stored(){return stored;},get puts(){return puts;}};
@@ -199,4 +199,37 @@ test('course list stays three columns and details expose saved metrics before em
  assert.match(list,/리커버리/);assert.match(list,/평지 중장거리/);assert.match(list,/산악 중장거리/);assert.match(list,/싸몽 루프/);assert.match(list,/1,500/);assert.equal((list.match(/<th scope=/g)||[]).length,3);assert.doesNotMatch(list,/iframe|Detailed climb notes/);
  vm.runInContext("showRoute('ride_1')",h.c);const detail=h.nodes.get('#content').innerHTML;
  assert.match(detail,/75 km/);assert.match(detail,/1,500 m/);assert.match(detail,/Detailed climb notes/);assert.match(detail,/strava-embeds/);
+});
+
+test('a compression-weakened response ETag does not cause false R2 write conflicts',async()=>{
+ const jwt=await token();await authorize(req(jwt),config,certs);
+ let saved=fixture(),version='0123456789abcdef0123456789abcdef',writes=0;
+ const env={TRAVEL_ACCESS_TEAM:config.team,TRAVEL_ACCESS_AUD:config.aud,TRAVEL_OWNER_EMAIL:config.email,TRAVEL_STORE:{
+  async get(){return {json:async()=>structuredClone(saved),etag:version,httpEtag:'"'+version+'"'};},
+  async put(key,body,options){if(options.onlyIf.etagMatches!==version)return null;saved=JSON.parse(body);version='fedcba9876543210fedcba9876543210';writes++;return {etag:version,httpEtag:'"'+version+'"'};}
+ }};
+ const call=(method,body,extra={})=>onRequest({env,request:new Request('https://site.example/travel/api/state',{method,headers:{'Cf-Access-Jwt-Assertion':jwt,Origin:'https://site.example',...extra},...(body?{body:JSON.stringify(body)}:{})})});
+ const response=await call('GET'),original=response.headers.get('ETag');
+ const updated=fixture();updated.notes='Phone edit';
+ // The CDN changes only the HTTP representation validator, not the stored object's revision.
+ const legacy=await call('PUT',updated,{'If-Match':'W/'+original});
+ assert.equal(legacy.status,200);assert.equal(writes,1);assert.equal(saved.notes,'Phone edit');
+ assert.equal(response.headers.get('X-Travel-Version'),original);
+ const current=legacy.headers.get('X-Travel-Version');assert.equal(current,'"'+version+'"');
+ updated.notes='Modern client';assert.equal((await call('PUT',updated,{'X-Travel-Version':current,'If-Match':'W/'+original})).status,200);
+ assert.equal((await call('PUT',updated,{'X-Travel-Version':original})).status,409);
+ assert.equal((await call('PUT',updated,{'X-Travel-Version':'*'})).status,400);
+ assert.equal((await call('PUT',updated,{'If-Match':'"a", "b"'})).status,400);
+});
+
+test('client uses the unmodified app revision when HTTP ETag is weakened',async()=>{
+ const h=syncHarness(fixture());h.mode('cdn');await vm.runInContext('load()',h.c);
+ vm.runInContext("data.notes='Saved from phone';changed();",h.c);assert.equal(await vm.runInContext('save()',h.c),true);
+ assert.equal(h.stored.notes,'Saved from phone');assert.equal(h.requests.at(-1).opts.headers['X-Travel-Version'],'"2"');assert.equal(h.storage.size,0);
+});
+test('an unchanged server revision rejection does not loop or blame another device',async()=>{
+ const h=syncHarness(fixture());await vm.runInContext('load()',h.c);h.mode('reject');const before=h.puts;
+ vm.runInContext("data.notes='Retain failed save';changed();",h.c);assert.equal(await vm.runInContext('save()',h.c),false);
+ assert.equal(h.puts,before+1);assert.ok(h.storage.size);assert.doesNotMatch(h.nodes.get('#syncNotice').innerHTML,/다른 기기/);
+ h.mode('normal');assert.equal(await vm.runInContext('save()',h.c),true);assert.equal(h.stored.notes,'Retain failed save');
 });
