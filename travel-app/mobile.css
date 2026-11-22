@@ -30,3 +30,5 @@
 }
 @media(max-width:350px){.course-number{width:70px}.course-table th,.course-table td{padding-left:6px;padding-right:6px}.course-table th{font-size:14px}.top-actions button{padding:8px 10px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+.course-provisional{display:block;font-size:11px;font-weight:400;color:var(--muted);margin-top:3px;}

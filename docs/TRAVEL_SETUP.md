@@ -55,7 +55,7 @@ The active travel app remains `/travel` in this repository. Other dashboard prot
 
 Edits now autosave after a short pause. The browser keeps a private pending draft until an authenticated, version-checked PUT succeeds. On a stale ETag, the client compares its baseline with the latest state, merges edits to different fields and asks the owner to resolve same-field conflicts. Login expiry, connection failures and size limits stay visible with a retry action. Server authentication and conditional writes remain required.
 
-Courses use compact category tables and full-page details. Unverified terrain stays in a collapsed classification queue; no distance-based assumption of flat terrain is made. Original ride dates remain in the historical record details. Mobile calendars show date and ride type; distance remains in the selected-day detail.
+Courses use compact category tables and full-page details. Historical rides appear alongside planned courses in the three category tables. Known mountain names and explicit recovery titles are classified by name. Historical rides with uncertain terrain receive an explicit provisional category marker in the name cell and an explanation in details; unknown rides are provisionally placed in the flat category, not claimed to have verified flat terrain. Distance alone never implies recovery. Unclassified planned courses retain their queue. The compact-v2 migration upgrades existing compact-v1 data on authenticated load and autosaves through the existing version-checked API, preserving ride dates, metrics, notes, IDs, and manually assigned categories. Later manual category changes are not reclassified on reload. Original ride dates remain in the historical record details. Mobile calendars show date and ride type; distance remains in the selected-day detail.
 
 Optional private hotel confirmations can be delivered to the owner in a URL fragment containing an AES-GCM payload and its key. Neither payload nor key belongs in source control or public assets. Fragments are not sent in HTTP requests. The client immediately clears the fragment, decrypts locally, verifies every booking reference and date against the owner's existing records, and saves only the confirmation through the protected API. Original booking records remain intact.
 
@@ -76,7 +76,7 @@ API 요청에는 `X-Requested-With: XMLHttpRequest`를 보내 만료된 세션�
 
 ### 이번 변경 검증
 
-`node scripts/build-travel.mjs` 후 `node --test tests/travel.test.mjs`를 실행합니다. 28개 테스트에 로그인 응답, 요청 시간 초과, 앱 복귀, 저장 도중 추가 입력, 최초 가져오기 충돌과 코스 목록/상세 구분이 포함됩니다. 실제 사용자 R2 데이터 저장과 iPhone 화면은 로그인된 기기에서 별도 확인이 필요합니다.
+`node scripts/build-travel.mjs` 후 `node --test tests/travel.test.mjs`를 실행합니다. 자동 테스트에 로그인 응답, 요청 시간 초과, 앱 복귀, 저장 도중 추가 입력, 최초 가져오기 충돌과 코스 목록/상세 구분이 포함됩니다. 실제 사용자 R2 데이터 저장과 iPhone 화면은 로그인된 기기에서 별도 확인이 필요합니다.
 
 ### 전송 과정의 버전 표기 변경
 
