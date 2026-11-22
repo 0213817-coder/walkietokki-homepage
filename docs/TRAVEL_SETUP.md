@@ -76,4 +76,10 @@ API 요청에는 `X-Requested-With: XMLHttpRequest`를 보내 만료된 세션�
 
 ### 이번 변경 검증
 
-`node scripts/build-travel.mjs` 후 `node --test tests/travel.test.mjs`를 실행합니다. 25개 테스트에 로그인 응답, 요청 시간 초과, 앱 복귀, 저장 도중 추가 입력, 최초 가져오기 충돌과 코스 목록/상세 구분이 포함됩니다. 실제 사용자 R2 데이터 저장과 iPhone 화면은 로그인된 기기에서 별도 확인이 필요합니다.
+`node scripts/build-travel.mjs` 후 `node --test tests/travel.test.mjs`를 실행합니다. 28개 테스트에 로그인 응답, 요청 시간 초과, 앱 복귀, 저장 도중 추가 입력, 최초 가져오기 충돌과 코스 목록/상세 구분이 포함됩니다. 실제 사용자 R2 데이터 저장과 iPhone 화면은 로그인된 기기에서 별도 확인이 필요합니다.
+
+### 전송 과정의 버전 표기 변경
+
+Cloudflare가 압축 등으로 HTTP ETag를 `W/"..."`로 바꿀 수 있습니다. 기존 코드가 따옴표만 제거해 `W/`를 R2 비교값에 남기면, 다른 기기의 수정 없이도 저장이 409로 거절됩니다. 앱 버전은 별도 `X-Travel-Version` 헤더로 전달하며 R2의 조건부 쓰기는 계속 적용합니다. 이미 열려 있는 구버전 페이지도 저장할 수 있도록 기존 If-Match의 단일 ETag 표기를 해석합니다. 와일드카드·여러 버전 목록은 허용하지 않습니다. 이 회귀 상황은 수정 전 실패/수정 후 통과를 확인했습니다. 사용자 기기의 실제 응답 헤더는 아직 직접 확인하지 못했습니다.
+
+https://developers.cloudflare.com/cache/reference/etag-headers/

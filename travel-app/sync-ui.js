@@ -49,11 +49,12 @@ async function savePending(){
  try{
   for(let attempt=0;attempt<3;attempt++){
    const snapshot=copyState(data),text=JSON.stringify(snapshot);if(new TextEncoder().encode(text).length>1000000)throw Error('저장 용량(1MB)을 넘었습니다. 코스 좌표나 긴 메모를 줄인 뒤 다시 저장하세요.');
-   let result;try{result=await requestTravelState({method:'PUT',headers:{'Content-Type':'application/json','If-Match':etag},body:text});}
+   let result;try{result=await requestTravelState({method:'PUT',headers:{'Content-Type':'application/json','X-Travel-Version':etag,'If-Match':etag},body:text});}
    catch(error){
     if(error.status!==409)throw error;
     const latest=await requestTravelState(),remote=latest.body,nextEtag=latest.etag;
     if(!validState(remote)||!nextEtag)throw Error('최신 저장 정보를 확인하지 못했습니다. 다시 시도하세요.');
+    if(nextEtag===etag&&JSON.stringify(remote)===JSON.stringify(syncBase))throw Error('서버가 저장을 승인하지 못했습니다. 변경 내용은 이 기기에 보관했습니다. 잠시 후 다시 시도해 주세요.');
     const merged=mergeTravelState(syncBase,data,remote);
     if(merged.conflicts.length){syncConflict={base:copyState(syncBase),remote,etag:nextEtag};rememberDraft();syncNotice('같은 항목이 다른 기기에서도 수정되었습니다. 비교 후 사용할 내용을 선택하세요.','conflict');$('#saveState').textContent='변경 내용 확인';return false;}
     data=merged.state;syncBase=copyState(remote);etag=nextEtag;rememberDraft();continue;
@@ -61,7 +62,7 @@ async function savePending(){
    syncBase=snapshot;etag=result.etag;syncAuthNeeded=false;dirty=JSON.stringify(data)!==text;succeeded=true;$('#syncNotice').hidden=true;
    $('#saveState').textContent=dirty?'저장 대기':'동기화 완료';$('#saveState').className=dirty?'status accent':'status';if(dirty)rememberDraft();else clearDraft();return true;
   }
-  throw Error('다른 기기의 변경이 이어지고 있습니다. 잠시 후 다시 저장하세요.');
+  throw Error('저장 버전을 확인하지 못했습니다. 변경 내용은 이 기기에 보관했습니다. 잠시 후 다시 시도해 주세요.');
  }catch(error){syncAuthNeeded=error.code==='AUTH';rememberDraft();$('#saveState').textContent=syncAuthNeeded?'로그인 필요':'저장 재시도';syncNotice(error.message+(error.status?' (HTTP '+error.status+')':''),error.code);return false;}
  finally{saving=false;$('#saveBtn').disabled=false;if(succeeded&&dirty)scheduleSave();}
 }

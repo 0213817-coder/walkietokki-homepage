@@ -26,7 +26,7 @@ export async function requestTravelState(options={}){
  const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),15000);
  try{
   const response=await fetch('/travel/api/state',{...options,cache:'no-store',credentials:'same-origin',redirect:'manual',signal:controller.signal,headers:{...options.headers,'X-Requested-With':'XMLHttpRequest'}});
-  const body=await stateResponse(response),etag=response.headers.get('ETag');
+  const body=await stateResponse(response),etag=response.headers.get('X-Travel-Version')||response.headers.get('ETag');
   if(!etag)throw Error('저장 버전 정보를 받지 못했습니다. 다시 시도하면 최신 내용과 비교합니다.');
   return {body,etag};
  }catch(error){
