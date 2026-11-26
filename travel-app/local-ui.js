@@ -15,7 +15,7 @@ load=async function(){
    else{const m=mergeTravelState(draft.base,draft.data,data);if(m.conflicts.length)localConflict={base:draft.base,remote:copyState(data),revision:localRevision};data=m.state;dirty=JSON.stringify(data)!==JSON.stringify(localBase);}
   }
   if(data&&!validState(data))throw Error('저장된 여행의 형식을 확인하지 못했습니다. 백업을 불러와 주세요.');
-  if(data){migrateLocal();dirty=dirty||JSON.stringify(data)!==JSON.stringify(localBase);render();if(localConflict){showLocalConflict();}else if(dirty)await save();else $('#saveState').textContent='기기 저장 완료';}
+  if(data){migrateLocal();await receiveStayUpdate();dirty=dirty||JSON.stringify(data)!==JSON.stringify(localBase);render();if(localConflict){showLocalConflict();}else if(dirty)await save();else $('#saveState').textContent='기기 저장 완료';}
   else showLocalWelcome();
   const transfer=readTransfer();if(transfer)offerTransfer(transfer);
  }catch(error){$('#saveState').textContent='저장 확인';localMessage(error.message);if(!data)showLocalWelcome();}

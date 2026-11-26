@@ -7,8 +7,10 @@ export const discoveries=[
  {id:'maiiam-art',closes:18,name:'거울벽 너머, 태국 현대미술',place:'MAIIAM Contemporary Art Museum',area:'산캄팽',theme:'현대미술',duration:'1–2시간 + 이동',minutes:120,effort:'outing',period:'afternoon',closedWeekdays:[2],description:'북부의 사원과 카페 다음에는 현대미술. 거울 외벽을 지나 태국과 동남아 작가의 시선을 만나보세요.',hours:'10:00–18:00 · 화요일 휴관',caution:'시내 밖 이동이 필요합니다. 방문일 전시와 연말 운영일을 공식 페이지에서 확인하세요.',query:'MAIIAM Contemporary Art Museum',url:'https://maiiam.com/en/visit',icon:'art',image:'https://cdn.sanity.io/images/e0xvz2za/production/5df55001c30f551f0ef03c981a463d3ed2ede51d-1200x900.jpg?q=75'},
  {id:'akha-coffee',closes:17.5,name:'농부 이름으로 고르는 커피',place:'Akha Ama Phrasingh',area:'왓 프라싱 근처',theme:'북부 커피',duration:'30–45분',minutes:40,effort:'easy',period:'afternoon',description:'한 잔을 마시더라도 생산자 이야기가 있는 원두로. 마음에 든 맛을 여행의 기념품으로 가져가세요.',hours:'매일 08:00–17:30',caution:'Phrasingh 지점 기준입니다. 별도 커핑·농장 투어가 포함된 프로그램은 아닙니다.',query:'Akha Ama Phrasingh Chiang Mai',url:'https://www.akhaamacoffee.com/',icon:'coffee'}
 ];
-export const discoveryChecked='2026-11-23';
+export let discoveryChecked='2026-11-23';
 export function discoveryAvailability(item,date,clock){
+ if(item.startsOn&&date<item.startsOn)return '행사 시작 전';
+ if(item.endsOn&&date>item.endsOn)return '행사 종료';
  const weekday=new Date(date+'T12:00:00Z').getUTCDay();
  if(item.closedDates?.includes(date.slice(5)))return '휴관일';
  if(item.closedWeekdays?.includes(weekday))return '정기 휴무';

@@ -209,6 +209,28 @@ async function decodeStayUpdate(envelope,key){
  const aes=await crypto.subtle.importKey('raw',k,'AES-GCM',false,['decrypt']);return JSON.parse(new TextDecoder().decode(await crypto.subtle.decrypt({name:'AES-GCM',iv},aes,decode(envelope.ciphertext))));
 }
 
+// Enrichment is deliberately additive: never replace a user's whole trip.
+function applyTravelEnrichment(state,p,validate){
+ if(!p||p.kind!=='travel-enrichment'||typeof p.id!=='string'||!/^[a-zA-Z0-9_-]{1,80}$/.test(p.id)||!Array.isArray(p.routes)||p.routes.length>100||!Array.isArray(p.places)||p.places.length>100)throw Error('확인 자료의 형식이 올바르지 않습니다.');
+ const next=JSON.parse(JSON.stringify(state)),seen=new Set(),skipped=[];let routes=0,places=0;
+ for(const u of p.routes){
+  if(!u||seen.has(u.id)||!/^https:\/\/www\.strava\.com\/(activities|routes)\/\d+$/.test(u.url||''))throw Error('중복되거나 잘못된 코스 자료입니다.');seen.add(u.id);
+  const r=next.routes.find(r=>r.id===u.id&&r.name===u.expectedName&&String(r.year||'')===String(u.expectedYear||''));if(!r){skipped.push(u.expectedName||u.id);continue;}
+  for(const key of ['distance','elevation'])if(typeof u[key]!=='string'||!/^\d+(\.\d+)?$/.test(u[key]))throw Error('거리·고도 자료를 확인해 주세요.');
+  if(!['리커버리','평지 중장거리','산악 중장거리'].includes(u.category)||typeof u.verifiedNote!=='string'||u.verifiedNote.length>2000)throw Error('코스 분류 자료를 확인해 주세요.');
+  for(const key of ['url','distance','elevation','geometry','profile','metricSource','gpxFileName','gpxSha256','verifiedAt'])if(u[key]!==undefined)r[key]=u[key];
+  if(!r.category||r.category==='분류 대기'||r.categorySuggestion){r.category=u.category;delete r.categorySuggestion;}
+  if(/^스트라바 훈련 로그에서/.test(r.note||'')){r.originalImportNote=r.note;r.note=u.verifiedNote;}
+  else if(!String(r.note||'').includes(u.verifiedNote))r.note=[r.note,u.verifiedNote].filter(Boolean).join('\n');
+  routes++;
+ }
+ for(const u of p.places){const place=next.places.find(x=>x.id===u.id&&x.name===u.expectedName);if(!place){skipped.push(u.expectedName||u.id);continue;}if(u.visited!==true||typeof u.visitEvidence!=='string'||u.visitEvidence.length>2000||!/^\d{4}-\d{2}-\d{2}$/.test(u.visitDate||''))throw Error('방문 확인 자료를 확인해 주세요.');place.visited=true;place.visitEvidence=u.visitEvidence;place.visitDate=u.visitDate;if(!String(place.note||'').includes(u.visitEvidence))place.note=[place.note,u.visitEvidence].filter(Boolean).join('\n');places++;}
+ if(p.stay)applyStayUpdate(next,p.stay);
+ next.lastVerifiedUpdate={id:p.id,routes,places};
+ if(!validate(next)||new TextEncoder().encode(JSON.stringify(next)).length>1000000)throw Error('업데이트 용량 또는 형식을 확인해 주세요. 기존 데이터는 유지됩니다.');
+ return {state:next,routes,places,skipped};
+}
+
 const copyState=x=>x===undefined?undefined:JSON.parse(JSON.stringify(x));
 const plain=x=>x!==null&&typeof x==='object'&&!Array.isArray(x);
 const equal=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
@@ -371,8 +393,10 @@ const discoveries=[
  {id:'maiiam-art',closes:18,name:'거울벽 너머, 태국 현대미술',place:'MAIIAM Contemporary Art Museum',area:'산캄팽',theme:'현대미술',duration:'1–2시간 + 이동',minutes:120,effort:'outing',period:'afternoon',closedWeekdays:[2],description:'북부의 사원과 카페 다음에는 현대미술. 거울 외벽을 지나 태국과 동남아 작가의 시선을 만나보세요.',hours:'10:00–18:00 · 화요일 휴관',caution:'시내 밖 이동이 필요합니다. 방문일 전시와 연말 운영일을 공식 페이지에서 확인하세요.',query:'MAIIAM Contemporary Art Museum',url:'https://maiiam.com/en/visit',icon:'art',image:'https://cdn.sanity.io/images/e0xvz2za/production/5df55001c30f551f0ef03c981a463d3ed2ede51d-1200x900.jpg?q=75'},
  {id:'akha-coffee',closes:17.5,name:'농부 이름으로 고르는 커피',place:'Akha Ama Phrasingh',area:'왓 프라싱 근처',theme:'북부 커피',duration:'30–45분',minutes:40,effort:'easy',period:'afternoon',description:'한 잔을 마시더라도 생산자 이야기가 있는 원두로. 마음에 든 맛을 여행의 기념품으로 가져가세요.',hours:'매일 08:00–17:30',caution:'Phrasingh 지점 기준입니다. 별도 커핑·농장 투어가 포함된 프로그램은 아닙니다.',query:'Akha Ama Phrasingh Chiang Mai',url:'https://www.akhaamacoffee.com/',icon:'coffee'}
 ];
-const discoveryChecked='2026-11-23';
+let discoveryChecked='2026-11-23';
 function discoveryAvailability(item,date,clock){
+ if(item.startsOn&&date<item.startsOn)return '행사 시작 전';
+ if(item.endsOn&&date>item.endsOn)return '행사 종료';
  const weekday=new Date(date+'T12:00:00Z').getUTCDay();
  if(item.closedDates?.includes(date.slice(5)))return '휴관일';
  if(item.closedWeekdays?.includes(weekday))return '정기 휴무';
@@ -405,7 +429,7 @@ function dayPicker(day){return `<label class="day-picker">날짜 선택<select i
 function dayExtras(day){return (day.experienceIds||[]).map(id=>discoveries.find(x=>x.id===id)).filter(Boolean);}
 function timeline(day){const route=data.routes.find(r=>r.id===day.routeId);return `<div class="journey-timeline">${[['오전',route?.name||day.morning,'routes'],['오후',day.afternoon,'discover'],['저녁',day.dinner,'places']].map(([label,value,target])=>`<div class="timeline-row"><span class="timeline-label">${label}</span><div><p>${esc(value||'아직 비워둔 시간')}</p>${label==='오전'&&route?`<button class="text-action" data-route-detail="${esc(route.id)}">코스 상세</button>`:!value?`<button class="text-action" data-go="${target}">${label==='오전'?'코스 고르기':label==='오후'?'발견 둘러보기':'식당 고르기'}</button>`:''}</div></div>`).join('')}</div>${dayExtras(day).map(x=>`<div class="planned-discovery"><div><small>추가한 발견</small><b>${esc(x.name)}</b><span>${esc(x.duration)} · ${esc(x.area)}${discoveryAvailability(x,day.date)?' · '+esc(discoveryAvailability(x,day.date)):''}</span></div><div class="actions">${external(directionLink(x.query),'길찾기')}<button data-remove-experience="${esc(x.id)}" data-day-id="${esc(day.id)}" aria-label="${esc(x.name)} 일정에서 빼기">빼기</button></div></div>`).join('')}`;}
 function suggestionReason(item,day){if(item.weekdays)return '수요일에만 여는 아침시장 · 정오 전';if(day.intensity==='최고강도')return '강하게 탄 날엔, 이동 부담이 적은 선택';if(day.rideKind==='휴식')return item.effort==='outing'?'라이딩 없는 날, 조금 멀리 나가보기':'쉬는 날에도 가볍게 즐기는 한 가지';return item.period==='evening'?'저녁 식사 전후에 이어가기':'라이딩을 마친 뒤 천천히';}
-function discoveryCard(item,day,compact=false){const log=data.discoveryLog?.[item.id]||{},known=discoveryIsKnown(data,item),unavailable=discoveryAvailability(item,day.date,visitClock());return `<article class="discovery-card ${compact?'compact':''}"><div class="discovery-art art-${item.icon}">${item.image?`<img src="${safe(item.image)}" alt="${esc(item.place)} 공식 소개 사진" loading="lazy" decoding="async" referrerpolicy="no-referrer">`:icon(item.icon)}<span>${esc(item.fresh||item.theme)}</span></div><div class="discovery-copy"><div class="discovery-meta">${esc(item.area)} · ${esc(item.duration)}</div><h3>${esc(item.name)}</h3><p>${esc(item.description)}</p>${compact?`<div class="recommendation-reason">${esc(suggestionReason(item,day))}</div>`:''}${unavailable?`<p class="availability-note">${esc(shortDay(day.date))} · ${esc(unavailable)}</p>`:''}<div class="discovery-actions"><button data-plan-experience="${item.id}" class="primary">일정에 담기</button><button data-save-experience="${item.id}" aria-pressed="${!!log.saved}">${log.saved?'담아둠':'가보고 싶음'}</button></div><details class="discovery-details"><summary>방문 정보</summary><p>${esc(item.hours)}</p><p>${esc(item.caution)}</p><div class="actions">${external(directionLink(item.query),'길찾기')}${external(item.url,item.image?'공식 안내·사진 출처':'공식 안내')}<button data-visited-experience="${item.id}" aria-pressed="${!!log.visited}">${log.visited?'방문 취소':'다녀옴'}</button><button data-known-experience="${item.id}" aria-pressed="${!!log.known}">${log.known?'다시 추천받기':'이미 아는 곳'}</button></div><small>운영정보 확인 ${discoveryChecked} · 소요시간은 제안</small></details>${known?'<span class="known-place">이미 만난 곳</span>':''}</div></article>`;}
+function discoveryCard(item,day,compact=false){const log=data.discoveryLog?.[item.id]||{},known=discoveryIsKnown(data,item),unavailable=discoveryAvailability(item,day.date,visitClock());return `<article class="discovery-card ${compact?'compact':''}"><div class="discovery-art art-${item.icon}">${item.image?`<img src="${safe(item.image)}" alt="${esc(item.place)} 공식 소개 사진" loading="lazy" decoding="async" referrerpolicy="no-referrer">`:icon(item.icon)}<span>${esc(item.fresh||item.theme)}</span></div><div class="discovery-copy"><div class="discovery-meta">${esc(item.area)} · ${esc(item.duration)}</div><h3>${esc(item.name)}</h3><p>${esc(item.description)}</p>${compact?`<div class="recommendation-reason">${esc(suggestionReason(item,day))}</div>`:''}${unavailable?`<p class="availability-note">${esc(shortDay(day.date))} · ${esc(unavailable)}</p>`:''}<div class="discovery-actions"><button data-plan-experience="${item.id}" class="primary">일정에 담기</button><button data-save-experience="${item.id}" aria-pressed="${!!log.saved}">${log.saved?'담아둠':'가보고 싶음'}</button></div><details class="discovery-details"><summary>방문 정보</summary><p>${esc(item.hours)}</p><p>${esc(item.caution)}</p><div class="actions">${external(directionLink(item.query),'길찾기')}${external(item.url,item.sourceLabel||(item.image?'공식 안내·사진 출처':'공식 안내'))}<button data-visited-experience="${item.id}" aria-pressed="${!!log.visited}">${log.visited?'방문 취소':'다녀옴'}</button><button data-known-experience="${item.id}" aria-pressed="${!!log.known}">${log.known?'다시 추천받기':'이미 아는 곳'}</button></div><small>운영정보 확인 ${esc(item.checkedAt||discoveryChecked)} · 소요시간은 제안</small></details>${known?'<span class="known-place">이미 만난 곳</span>':''}</div></article>`;}
 function dayHero(day){const today=bangkokDate(),before=today<data.trip.start,after=today>data.trip.end;const label=before?'여행을 기다리며':after?'여행을 돌아보며':'치앙마이에서 보내는 오늘';return `<section class="journey-hero"><div class="journey-heading"><span class="eyebrow">${label}</span><h1>치앙마이,<br>나의 속도로<span>.</span></h1><p>아침엔 페달, 오후엔 새로운 골목.</p><div class="journey-dates">${esc(data.trip.start)} — ${esc(data.trip.end)}</div></div><div class="hero-stamp" aria-hidden="true"><span>RIDE<br>WANDER<br>REPEAT</span>${icon('routes')}</div></section>`;}
 views.home=function(){const day=focusDay();if(!day)return title('나의 속도로','여행 일정을 추가하세요.');const suggestions=journeyRecommendations(day).slice(0,2),packed=data.packing.filter(p=>p.done).length;return dayHero(day)+`<div class="home-layout"><section class="today-panel"><div class="panel-heading"><div><span class="eyebrow">${day.date===bangkokDate()?'TODAY':'DAY PREVIEW'}</span><h2>${esc(shortDay(day.date))}</h2></div>${badge(dayLabel(day))}</div>${timeline(day)}<div class="panel-actions"><button class="primary" data-open-day="${esc(day.date)}">하루 계획 보기</button><button data-go="routes">코스 고르기</button></div></section><section class="travel-essentials"><h2>필요할 때, 바로</h2>${[['flights','항공권','편명 · 좌석 · 출도착'],['hotels','숙소','예약 · 체크인'],['packing','출발 준비',`${packed}/${data.packing.length} 완료`],['places','저장한 장소',`${data.places.length}곳 · 식당과 카페`]].map(([v,n,s])=>`<button data-go="${v}">${icon(v)}<span><b>${n}</b><small>${s}</small></span></button>`).join('')}</section></div><div class="section-head"><div><span class="eyebrow">OFF THE BIKE</span><h2>이번엔, 다른 치앙마이</h2></div><button class="text-action" data-go="discover">모두 보기</button></div><p class="section-intro">${esc(shortDay(day.date))} 일정과 정기 운영일을 보고 골랐어요. 실시간 영업 여부는 방문 전에 확인하세요.</p><div class="discovery-grid">${suggestions.map(x=>discoveryCard(x,day,true)).join('')||'<p class="empty">추천할 새 장소가 없어요. 발견 탭에서 담아둔 곳과 이미 아는 곳을 볼 수 있습니다.</p>'}</div>`;};
 views.days=function(){const day=focusDay();if(!day)return title('하루의 리듬','일정을 추가하세요.');selectedDate=day.date;return title('하루의 리듬','달릴 시간과 느슨하게 보낼 시간을 함께.')+dayPicker(day)+`<article class="today-panel" id="day-detail"><div class="panel-heading"><div><span class="eyebrow">${esc(day.date)}</span><h2>${esc(dayLabel(day))}</h2></div>${edit('days',day.id)}</div><div class="meta-row">${badge(day.status||'제안')}${day.goal?badge('라이딩 목표 '+day.goal+' km'):''}</div>${timeline(day)}${day.note?`<p class="day-note">${esc(day.note)}</p>`:''}<div class="actions"><button data-go="routes">코스 연결</button><button data-go="discover">발견 담기</button><button data-go="places">식당·장소</button></div></article><details class="calendar-drawer"><summary>월간 일정 펼치기</summary><p class="section-intro">${esc(data.trip.scheduleRule||'날짜를 선택하면 하루 계획이 열립니다.')}</p>${calendar()}</details><div class="section-head"><h2>이날에 어울리는 발견</h2></div><div class="discovery-grid">${journeyRecommendations(day).slice(0,2).map(x=>discoveryCard(x,day,true)).join('')}</div>`;};
@@ -474,7 +498,7 @@ load=async function(){
    else{const m=mergeTravelState(draft.base,draft.data,data);if(m.conflicts.length)localConflict={base:draft.base,remote:copyState(data),revision:localRevision};data=m.state;dirty=JSON.stringify(data)!==JSON.stringify(localBase);}
   }
   if(data&&!validState(data))throw Error('저장된 여행의 형식을 확인하지 못했습니다. 백업을 불러와 주세요.');
-  if(data){migrateLocal();dirty=dirty||JSON.stringify(data)!==JSON.stringify(localBase);render();if(localConflict){showLocalConflict();}else if(dirty)await save();else $('#saveState').textContent='기기 저장 완료';}
+  if(data){migrateLocal();await receiveStayUpdate();dirty=dirty||JSON.stringify(data)!==JSON.stringify(localBase);render();if(localConflict){showLocalConflict();}else if(dirty)await save();else $('#saveState').textContent='기기 저장 완료';}
   else showLocalWelcome();
   const transfer=readTransfer();if(transfer)offerTransfer(transfer);
  }catch(error){$('#saveState').textContent='저장 확인';localMessage(error.message);if(!data)showLocalWelcome();}
@@ -520,6 +544,55 @@ if('serviceWorker' in navigator){navigator.serviceWorker.register('/ridebook/sw.
 else $('#offlineStatus').textContent='이 브라우저는 온라인으로 사용하세요';
 const localMore=openMore;openMore=function(){localMore();$('#moreBody').insertAdjacentHTML('beforeend','<button id="localAppSettings">설치 · 기기 저장 안내</button>');$('#localAppSettings').onclick=()=>{$('#moreDialog').close();installationHelp();};};$('#moreBtn').onclick=openMore;
 const localNotes=views.notes;views.notes=()=>localNotes().replace('논의할 내용과 참고 자료를 모아 둡니다.','메모와 참고 자료 · 이 기기에 자동 저장').replace('입력한 내용은 자동 저장됩니다. 동기화 상태는 상단에서 확인하세요.','입력한 내용은 이 기기에 자동 저장됩니다.').replace('Chrome 또는 Safari에서 로그인 후 공유 메뉴의 ‘홈 화면에 추가’를 선택하세요. 인터넷 연결과 본인 계정 로그인이 필요합니다.','공유 메뉴의 ‘홈 화면에 추가’를 선택하세요. 오프라인 준비 완료 후에는 인터넷 없이 여행 정보를 확인할 수 있습니다.').replace('다른 기기에서는 같은 주소로 접속하세요.','다른 기기에서는 같은 주소를 열고 백업 파일을 가져오세요.');
+
+const importWithEnrichment=$('#importFile').onchange;
+$('#importFile').onchange=async e=>{
+ const file=e.target.files[0];if(!file)return;
+ let incoming;try{if(file.size>1000000)throw Error('1MB 이하의 파일을 선택하세요.');incoming=JSON.parse(await file.text());}catch(err){notify(err.message);e.target.value='';return;}
+ if(incoming.kind!=='travel-enrichment')return importWithEnrichment(e);
+ try{
+  if(!data)throw Error('먼저 기존 여행 백업을 가져온 뒤 확인 자료를 적용하세요.');
+  const result=applyTravelEnrichment(data,incoming,validState);
+  if(!confirm(`코스 ${result.routes}개 · 방문 장소 ${result.places}개${incoming.stay?' · 숙박 확정':''}를 반영합니다. 기존 일정·메모·즐겨찾기는 유지합니다.${result.skipped.length?' 이름이 바뀌었거나 없는 항목 '+result.skipped.length+'개는 제외합니다.':''}`))return;
+  localStorage.setItem('ridebook-before-enrichment-v1',JSON.stringify(data));
+  data=result.state;changed();render();await save();notify('확인 자료를 반영했습니다. 저장 상태를 확인하세요.');
+ }catch(err){notify(err.message);}finally{e.target.value='';}
+};
+const enrichedMore=openMore;openMore=function(){enrichedMore();$('#moreBody').insertAdjacentHTML('beforeend','<button id="importVerified">코스·숙박 확인 자료 반영</button><button id="exportBeforeVerified">반영 전 백업 내려받기</button>');$('#importVerified').onclick=()=>{$('#moreDialog').close();$('#importFile').click();};$('#exportBeforeVerified').onclick=()=>{const text=localStorage.getItem('ridebook-before-enrichment-v1');if(!text){notify('보관된 반영 전 백업이 없습니다.');return;}const url=URL.createObjectURL(new Blob([text],{type:'application/json'})),a=document.createElement('a');a.href=url;a.download='travel-before-update.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};};$('#moreBtn').onclick=openMore;
+
+function validDiscoveryFeed(feed){
+ const date=x=>typeof x==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(x)&&Number.isFinite(Date.parse(x));
+ if(!feed||feed.version!==1||!date(feed.checkedAt)||!Array.isArray(feed.items)||!feed.items.length||feed.items.length>80)return false;
+ const ids=new Set(),required=['name','place','area','theme','duration','description','hours','caution','query','url','checkedAt'];
+ const strings=[...required,'fresh','image','startsOn','endsOn','sourceLabel'];
+ for(const x of feed.items){
+  if(!x||typeof x.id!=='string'||!/^[a-zA-Z0-9_-]{1,80}$/.test(x.id)||ids.has(x.id)||required.some(k=>typeof x[k]!=='string'||!x[k].trim())||strings.some(k=>x[k]!==undefined&&(typeof x[k]!=='string'||x[k].length>2000)))return false;ids.add(x.id);
+  if(!date(x.checkedAt)||x.checkedAt>feed.checkedAt||['startsOn','endsOn'].some(k=>x[k]!==undefined&&!date(x[k]))||(x.startsOn&&x.endsOn&&x.startsOn>x.endsOn))return false;
+  for(const key of ['url','image'])if(x[key]){try{const u=new URL(x[key]);if(u.protocol!=='https:'||u.username||u.password)return false;}catch{return false;}}
+  if(!['tram','market','stories','craft','art','coffee'].includes(x.icon)||!['easy','outing'].includes(x.effort)||!['morning','afternoon','evening'].includes(x.period)||!Number.isFinite(x.minutes)||x.minutes<1||x.minutes>1440||!Number.isFinite(x.closes)||x.closes<0||x.closes>24)return false;
+  for(const k of ['weekdays','closedWeekdays'])if(x[k]!==undefined&&(!Array.isArray(x[k])||x[k].length>7||x[k].some(n=>!Number.isInteger(n)||n<0||n>6)))return false;
+  if(x.closedDates!==undefined&&(!Array.isArray(x.closedDates)||x.closedDates.length>366||x.closedDates.some(d=>typeof d!=='string'||!/^\d{2}-\d{2}$/.test(d))))return false;
+ }
+ return true;
+}
+function mergeDiscoveryFeed(current,feed){
+ if(!validDiscoveryFeed(feed))throw Error('추천 자료 형식을 확인하지 못했습니다.');
+ // Keep previous IDs for saved plans and visit history; upsert public fields only.
+ const map=new Map(current.map(x=>[x.id,x]));for(const x of feed.items)map.set(x.id,{...x});return [...map.values()];
+}
+
+const feedCacheKey='ridebook-public-discoveries-v1';let feedRefreshing=false,feedFetchedAt=0,feedStatus='기본 추천';
+function installDiscoveryFeed(feed){const merged=mergeDiscoveryFeed(discoveries,feed);discoveries.splice(0,discoveries.length,...merged);discoveryChecked=feed.checkedAt;}
+try{const cached=JSON.parse(localStorage.getItem(feedCacheKey)||'null');if(cached&&validDiscoveryFeed(cached.feed)){installDiscoveryFeed(cached.feed);feedFetchedAt=Number(cached.fetchedAt)||0;feedStatus='저장된 추천';}}catch{}
+async function refreshDiscoveryFeed(force=false){
+ if(typeof navigator==='undefined'||feedRefreshing||!navigator.onLine||(!force&&Date.now()-feedFetchedAt<12*3600000))return;feedRefreshing=true;const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),5000);
+ try{const res=await fetch('/ridebook/discoveries.json',{cache:'no-store',credentials:'omit',signal:controller.signal});if(!res.ok)throw Error();const text=await res.text();if(text.length>200000)throw Error();const feed=JSON.parse(text);if(feed.checkedAt<discoveryChecked)throw Error();installDiscoveryFeed(feed);feedFetchedAt=Date.now();feedStatus='최신 자료 확인';try{localStorage.setItem(feedCacheKey,JSON.stringify({feed,fetchedAt:feedFetchedAt}));}catch{}if(data&&view==='discover')render();}
+ catch{feedStatus='저장된 추천 · 연결 후 재확인';}
+ finally{clearTimeout(timeout);feedRefreshing=false;}
+}
+const dailyDiscover=views.discover;views.discover=()=>dailyDiscover().replace('<div class="discovery-filter"',`<p class="section-intro">${esc(feedStatus)} · 자료 갱신 ${esc(discoveryChecked)} <button id="refreshDiscoveries">새로 확인</button></p><div class="discovery-filter"`);
+const dailyBind=bind;bind=function(){dailyBind();const b=$('#refreshDiscoveries');if(b)b.onclick=async()=>{b.disabled=true;await refreshDiscoveryFeed(true);if(data)render();};};
+window.addEventListener('online',()=>refreshDiscoveryFeed());document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')refreshDiscoveryFeed();});refreshDiscoveryFeed();
 
 load();
 </script></body></html>
