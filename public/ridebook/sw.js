@@ -1,4 +1,4 @@
-const CACHE='ridebook-b5d0f0c26d842c80';
+const CACHE='ridebook-6297fd20b42574c4';
 const SHELL='/ridebook/';
 const ASSETS=[SHELL,'/ridebook/manifest.webmanifest','/travel-assets/icon-192.png','/travel-assets/icon-512.png','/travel-assets/apple-touch-icon.png'];
 self.addEventListener('install',event=>event.waitUntil((async()=>{const cache=await caches.open(CACHE);await cache.addAll(ASSETS.map(url=>new Request(url,{cache:'reload'})));})()));
