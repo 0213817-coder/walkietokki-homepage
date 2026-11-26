@@ -12,3 +12,25 @@ export async function decodeStayUpdate(envelope,key){
  if(envelope?.version!==1)throw Error('지원하지 않는 숙박 업데이트입니다.');const k=decode(key),iv=decode(envelope.iv);if(k.length!==32||iv.length!==12)throw Error('업데이트 키가 올바르지 않습니다.');
  const aes=await crypto.subtle.importKey('raw',k,'AES-GCM',false,['decrypt']);return JSON.parse(new TextDecoder().decode(await crypto.subtle.decrypt({name:'AES-GCM',iv},aes,decode(envelope.ciphertext))));
 }
+
+// Enrichment is deliberately additive: never replace a user's whole trip.
+export function applyTravelEnrichment(state,p,validate){
+ if(!p||p.kind!=='travel-enrichment'||typeof p.id!=='string'||!/^[a-zA-Z0-9_-]{1,80}$/.test(p.id)||!Array.isArray(p.routes)||p.routes.length>100||!Array.isArray(p.places)||p.places.length>100)throw Error('확인 자료의 형식이 올바르지 않습니다.');
+ const next=JSON.parse(JSON.stringify(state)),seen=new Set(),skipped=[];let routes=0,places=0;
+ for(const u of p.routes){
+  if(!u||seen.has(u.id)||!/^https:\/\/www\.strava\.com\/(activities|routes)\/\d+$/.test(u.url||''))throw Error('중복되거나 잘못된 코스 자료입니다.');seen.add(u.id);
+  const r=next.routes.find(r=>r.id===u.id&&r.name===u.expectedName&&String(r.year||'')===String(u.expectedYear||''));if(!r){skipped.push(u.expectedName||u.id);continue;}
+  for(const key of ['distance','elevation'])if(typeof u[key]!=='string'||!/^\d+(\.\d+)?$/.test(u[key]))throw Error('거리·고도 자료를 확인해 주세요.');
+  if(!['리커버리','평지 중장거리','산악 중장거리'].includes(u.category)||typeof u.verifiedNote!=='string'||u.verifiedNote.length>2000)throw Error('코스 분류 자료를 확인해 주세요.');
+  for(const key of ['url','distance','elevation','geometry','profile','metricSource','gpxFileName','gpxSha256','verifiedAt'])if(u[key]!==undefined)r[key]=u[key];
+  if(!r.category||r.category==='분류 대기'||r.categorySuggestion){r.category=u.category;delete r.categorySuggestion;}
+  if(/^스트라바 훈련 로그에서/.test(r.note||'')){r.originalImportNote=r.note;r.note=u.verifiedNote;}
+  else if(!String(r.note||'').includes(u.verifiedNote))r.note=[r.note,u.verifiedNote].filter(Boolean).join('\n');
+  routes++;
+ }
+ for(const u of p.places){const place=next.places.find(x=>x.id===u.id&&x.name===u.expectedName);if(!place){skipped.push(u.expectedName||u.id);continue;}if(u.visited!==true||typeof u.visitEvidence!=='string'||u.visitEvidence.length>2000||!/^\d{4}-\d{2}-\d{2}$/.test(u.visitDate||''))throw Error('방문 확인 자료를 확인해 주세요.');place.visited=true;place.visitEvidence=u.visitEvidence;place.visitDate=u.visitDate;if(!String(place.note||'').includes(u.visitEvidence))place.note=[place.note,u.visitEvidence].filter(Boolean).join('\n');places++;}
+ if(p.stay)applyStayUpdate(next,p.stay);
+ next.lastVerifiedUpdate={id:p.id,routes,places};
+ if(!validate(next)||new TextEncoder().encode(JSON.stringify(next)).length>1000000)throw Error('업데이트 용량 또는 형식을 확인해 주세요. 기존 데이터는 유지됩니다.');
+ return {state:next,routes,places,skipped};
+}
