@@ -4,8 +4,10 @@ on:
     paths:
       - 'functions/travel/**'
       - 'travel-app/**'
-      - 'tests/travel.test.mjs'
+      - 'tests/*.test.mjs'
       - 'scripts/build-travel.mjs'
+      - 'public/ridebook/**'
+      - 'public/_headers'
       - 'public/_routes.json'
       - '.github/workflows/travel-checks.yml'
 permissions:
@@ -20,6 +22,6 @@ jobs:
           node-version: 20
           cache: npm
       - run: node scripts/build-travel.mjs
-      - run: node --test tests/travel.test.mjs
+      - run: node --test tests/*.test.mjs
       - run: npm ci
       - run: npm run build

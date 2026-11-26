@@ -1,0 +1,24 @@
+{
+  "id": "/ridebook/",
+  "name": "치앙마이, 나의 속도로",
+  "short_name": "나의 속도로",
+  "description": "일정·라이딩·여행 노트를 내 기기에 저장하는 여행 앱",
+  "lang": "ko",
+  "start_url": "/ridebook/",
+  "scope": "/ridebook/",
+  "display": "standalone",
+  "background_color": "#fafbff",
+  "theme_color": "#fafbff",
+  "icons": [
+    {
+      "src": "/travel-assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/travel-assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
