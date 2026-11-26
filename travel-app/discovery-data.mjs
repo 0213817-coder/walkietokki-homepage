@@ -15,7 +15,7 @@ export function discoveryAvailability(item,date,clock){
  if(item.closedDates?.includes(date.slice(5)))return '휴관일';
  if(item.closedWeekdays?.includes(weekday))return '정기 휴무';
  if(item.weekdays&&!item.weekdays.includes(weekday))return '수요일 오전 운영';
- if(clock?.date===date&&clock.hour>=item.closes)return '오늘 운영 종료';
+ if(item.closes!==null&&clock?.date===date&&clock.hour>=item.closes)return '오늘 운영 종료';
  return '';
 }
 export function discoveryIsKnown(state,item){

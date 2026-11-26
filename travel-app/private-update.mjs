@@ -15,8 +15,8 @@ export async function decodeStayUpdate(envelope,key){
 
 // Enrichment is deliberately additive: never replace a user's whole trip.
 export function applyTravelEnrichment(state,p,validate){
- if(!p||p.kind!=='travel-enrichment'||typeof p.id!=='string'||!/^[a-zA-Z0-9_-]{1,80}$/.test(p.id)||!Array.isArray(p.routes)||p.routes.length>100||!Array.isArray(p.places)||p.places.length>100)throw Error('확인 자료의 형식이 올바르지 않습니다.');
- const next=JSON.parse(JSON.stringify(state)),seen=new Set(),skipped=[];let routes=0,places=0;
+ if(!p||p.kind!=='travel-enrichment'||typeof p.id!=='string'||!/^[a-zA-Z0-9_-]{1,80}$/.test(p.id)||!Array.isArray(p.routes)||p.routes.length>100||!Array.isArray(p.places)||p.places.length>100||p.addRoutes!==undefined&&(!Array.isArray(p.addRoutes)||p.addRoutes.length>30))throw Error('확인 자료의 형식이 올바르지 않습니다.');
+ const next=JSON.parse(JSON.stringify(state)),seen=new Set(),skipped=[];let routes=0,addedRoutes=0,places=0;
  for(const u of p.routes){
   if(!u||seen.has(u.id)||!/^https:\/\/www\.strava\.com\/(activities|routes)\/\d+$/.test(u.url||''))throw Error('중복되거나 잘못된 코스 자료입니다.');seen.add(u.id);
   const r=next.routes.find(r=>r.id===u.id&&r.name===u.expectedName&&String(r.year||'')===String(u.expectedYear||''));if(!r){skipped.push(u.expectedName||u.id);continue;}
@@ -28,9 +28,17 @@ export function applyTravelEnrichment(state,p,validate){
   else if(!String(r.note||'').includes(u.verifiedNote))r.note=[r.note,u.verifiedNote].filter(Boolean).join('\n');
   routes++;
  }
+ for(const u of p.addRoutes||[]){
+  if(!u||seen.has(u.id)||!/^public_[a-zA-Z0-9_-]{1,72}$/.test(u.id||'')||!/^https:\/\/www\.strava\.com\/routes\/\d+$/.test(u.url||'')||!/^https:\/\//.test(u.sourceUrl||''))throw Error('추가 코스의 출처 또는 식별자를 확인해 주세요.');seen.add(u.id);
+  if(next.routes.some(r=>r.id===u.id||r.url===u.url)){skipped.push(u.name||u.id);continue;}
+  for(const key of ['name','distance','elevation','metricSource','gpxFileName','gpxSha256','verifiedAt','verifiedNote'])if(typeof u[key]!=='string'||!u[key].trim())throw Error('추가 코스의 확인 자료를 확인해 주세요.');
+  if(!/^\d+(\.\d+)?$/.test(u.distance)||!/^\d+(\.\d+)?$/.test(u.elevation)||!['리커버리','평지 중장거리','산악 중장거리'].includes(u.category)||!/^[a-f0-9]{64}$/.test(u.gpxSha256)||!/^\d{4}-\d{2}-\d{2}$/.test(u.verifiedAt)||u.verifiedNote.length>2000)throw Error('추가 코스의 거리·고도·분류 자료를 확인해 주세요.');
+  const route={id:u.id,name:u.name,type:'공식 코스',year:'',url:u.url,distance:u.distance,elevation:u.elevation,category:u.category,geometry:u.geometry,profile:u.profile,metricSource:u.metricSource,gpxFileName:u.gpxFileName,gpxSha256:u.gpxSha256,verifiedAt:u.verifiedAt,note:u.verifiedNote,sourceUrl:u.sourceUrl,sourceLabel:u.sourceLabel||'공식 공개 코스',favorite:false};
+  next.routes.push(route);addedRoutes++;
+ }
  for(const u of p.places){const place=next.places.find(x=>x.id===u.id&&x.name===u.expectedName);if(!place){skipped.push(u.expectedName||u.id);continue;}if(u.visited!==true||typeof u.visitEvidence!=='string'||u.visitEvidence.length>2000||!/^\d{4}-\d{2}-\d{2}$/.test(u.visitDate||''))throw Error('방문 확인 자료를 확인해 주세요.');place.visited=true;place.visitEvidence=u.visitEvidence;place.visitDate=u.visitDate;if(!String(place.note||'').includes(u.visitEvidence))place.note=[place.note,u.visitEvidence].filter(Boolean).join('\n');places++;}
  if(p.stay)applyStayUpdate(next,p.stay);
- next.lastVerifiedUpdate={id:p.id,routes,places};
+ next.lastVerifiedUpdate={id:p.id,routes,addedRoutes,places};
  if(!validate(next)||new TextEncoder().encode(JSON.stringify(next)).length>1000000)throw Error('업데이트 용량 또는 형식을 확인해 주세요. 기존 데이터는 유지됩니다.');
- return {state:next,routes,places,skipped};
+ return {state:next,routes,addedRoutes,places,skipped};
 }

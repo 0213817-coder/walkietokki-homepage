@@ -6,7 +6,7 @@ $('#importFile').onchange=async e=>{
  try{
   if(!data)throw Error('먼저 기존 여행 백업을 가져온 뒤 확인 자료를 적용하세요.');
   const result=applyTravelEnrichment(data,incoming,validState);
-  if(!confirm(`코스 ${result.routes}개 · 방문 장소 ${result.places}개${incoming.stay?' · 숙박 확정':''}를 반영합니다. 기존 일정·메모·즐겨찾기는 유지합니다.${result.skipped.length?' 이름이 바뀌었거나 없는 항목 '+result.skipped.length+'개는 제외합니다.':''}`))return;
+  if(!confirm(`기존 코스 확인 ${result.routes}개 · 새 코스 ${result.addedRoutes}개 · 방문 장소 ${result.places}개${incoming.stay?' · 숙박 확정':''}를 반영합니다. 기존 일정·메모·즐겨찾기는 유지합니다.${result.skipped.length?' 이미 있거나 이름이 바뀐 항목 '+result.skipped.length+'개는 제외합니다.':''}`))return;
   localStorage.setItem('ridebook-before-enrichment-v1',JSON.stringify(data));
   data=result.state;changed();render();await save();notify('확인 자료를 반영했습니다. 저장 상태를 확인하세요.');
  }catch(err){notify(err.message);}finally{e.target.value='';}
