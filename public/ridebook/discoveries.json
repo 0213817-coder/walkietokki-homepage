@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "checkedAt": "2026-11-26",
+  "checkedAt": "2026-11-27",
   "items": [
     {
       "id": "flowers-2026",
@@ -175,6 +175,29 @@
       "sourceLabel": "소개 블로그 · 운영 확인 필요",
       "icon": "coffee",
       "checkedAt": "2026-11-26"
+    },
+    {
+      "id": "winter-fair-2027",
+      "name": "귀국 전, 치앙마이 겨울장",
+      "place": "Chiang Mai Winter Fair · OTOP",
+      "area": "치앙마이 주청사 뒤편 행사장",
+      "theme": "지역 먹거리 · OTOP · 공연",
+      "fresh": "2027 공식 일정",
+      "duration": "1–2시간 + 이동",
+      "minutes": 90,
+      "effort": "easy",
+      "period": "evening",
+      "startsOn": "2027-01-08",
+      "endsOn": "2027-01-22",
+      "closes": null,
+      "description": "지역 특산품과 OTOP, 문화 행사, 자선 부스를 한자리에서 보는 치앙마이의 큰 겨울 행사. 이번 여행에는 1월 8일부터 13일까지 방문할 수 있습니다.",
+      "hours": "세부 운영시간 미공개",
+      "caution": "치앙마이 주정부가 9월 8일 발표한 준비 일정 기준입니다. 날짜와 장소는 확인됐지만 일별 공연·운영시간은 후속 공식 공지를 확인하세요.",
+      "query": "Chiang Mai Provincial Government Center",
+      "url": "https://www.chiangmai.go.th/managing/public/news_list?page=19",
+      "sourceLabel": "치앙마이 주정부 공식 공지",
+      "icon": "market",
+      "checkedAt": "2026-11-27"
     }
   ]
 }
