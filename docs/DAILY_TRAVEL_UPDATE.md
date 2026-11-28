@@ -12,4 +12,6 @@ Private Gmail reservation updates, user's GPX tracks, photo GPS, bookings, email
 
 New routes may be carried in the private enrichment file as `addRoutes` only when an official organizer page supplies both an individual public Strava route and its GPX. Additions use a stable `public_` ID, are skipped when the ID or Strava URL already exists, and never overwrite a user's route. Keep the GPX original in the private backup; do not commit GPX geometry or the enrichment file to this public repository.
 
+Confirmed recurring-club details may be appended to already scheduled private days with `dayNotes`. Each patch must match the existing day ID, date and route ID, cite an HTTPS source and checked date, and append rather than replace the user's note. A recurring schedule never proves that a specific future date will run; keep that uncertainty explicit. Never publish the dated private plan in the public feed.
+
 Report research, backup, app deployment and private-device synchronization separately. Gmail can be read through its connected account; browser Strava sessions and Mac Photos are not guaranteed to be available in a scheduled run. Report missing access instead of pretending those are permanently connected.
